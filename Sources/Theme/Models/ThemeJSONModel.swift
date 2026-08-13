@@ -62,6 +62,11 @@ struct ThemeJSONModel: Codable {
         }
     }
 
+    var version: String?
+    var schemaVersion: Int?
+    var themeId: String?
+    var palettes: [String: [String: [String: String]]]?
+    var semantic: [String: [String: String]]?
     var colors: [String: String]?
     var fonts: [String: FontModel]?
     var styles: [String: UserStyleModel]?
