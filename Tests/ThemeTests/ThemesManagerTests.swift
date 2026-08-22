@@ -14,10 +14,15 @@ final class ThemesManagerTests: XCTestCase {
         XCTAssertNotNil(ThemesManager.shared)
     }
 
+private struct TestThemeModule: ThemeModuleProviding {
+    let namespace = "account"
+    let themeData = ThemesManagerTests.semanticThemeData()
+}
+
     func testGenerateModelResolvesSemanticColorsForLightAndDarkMode() throws {
         let model = try ThemeModel.generateModel(Self.semanticThemeData())
 
-        let titleStyle = try XCTUnwrap(model.styles["TitleRW"])
+        let titleStyle = try XCTUnwrap(model.styles[ThemeStyleID("TitleRW").rawValue])
         let foreground = try XCTUnwrap(titleStyle.forground)
         let background = try XCTUnwrap(titleStyle.background?.color)
 
@@ -27,6 +32,14 @@ final class ThemesManagerTests: XCTestCase {
         XCTAssertNotNil(background.dark)
         XCTAssertEqual(model.themeId, "unit-test")
         XCTAssertEqual(model.schemaVersion, 1)
+    }
+
+    func testRegisterModuleNamespacesStylesForTypedLookup() throws {
+        try ThemesManager.setupApplicationTheme(Self.semanticThemeData())
+        try ThemesManager.register(TestThemeModule())
+
+        let style = ThemesManager.style(ThemeStyleID("account.TitleRW"))
+        XCTAssertNotNil(style)
     }
 
     func testGenerateModelFailsForMissingSemanticAlias() throws {

@@ -23,26 +23,67 @@ The design system must support:
 Follow this pipeline exactly:
 
 ```text
-JSON names tokens
-→ Decodable payload structs
+Module Theme.json names tokens
+→ build-tool plugin validates bundled JSON
+→ generated typed style IDs + module theme provider
+→ Decodable payload structs for runtime or remote payloads
 → validation + alias resolver
 → concrete resolved Swift types
-→ protocol-backed theme/style registry
-→ observable theme store
-→ SwiftUI environment
-→ components render semantic styles
+→ protocol-backed consolidated theme/style registry
+→ observable theme manager/store
+→ SwiftUI environment or existing style modifier
+→ components render semantic styles through typed style IDs
 ```
 
 ### Rules
 
 1. Do not let SwiftUI views or components decode JSON.
-2. Do not let components access JSON dictionaries, token-path strings, or palette keys.
+2. Do not let components access JSON dictionaries, token-path strings, palette keys, or raw style-name strings.
 3. Do not hardcode `Color`, `Font`, spacing, radius, border, or shadow values in feature views or reusable components.
 4. Do not make one large generic component with many Boolean style flags.
 5. Do not make components choose `light` or `dark` palettes themselves.
 6. Do not derive dark colors by blindly inverting light colors.
 7. Resolve all aliases and mode-specific values before styles reach the SwiftUI view hierarchy.
-8. Keep the last validated theme active if a remote payload is invalid.
+8. Use generated `ThemeStyleID` values for component and screen style references.
+9. Register module themes with the core theme manager before rendering that module.
+10. Keep the last validated theme active if a remote payload is invalid.
+
+---
+
+## Module theme architecture
+
+Each feature module may own its own theme payload. The module payload is validated at build time and converted into generated Swift, while the core theme package remains responsible for resolution, registration, fallback behavior, and SwiftUI application.
+
+```text
+FeatureModule/Theme.json
+→ ThemeCompiler build-tool plugin
+→ FeatureThemeStyles.generated.swift
+→ FeatureThemeProvider.generated.swift
+→ ThemesManager.register(featureThemeProvider)
+→ consolidated style lookup by ThemeStyleID
+```
+
+Generated style IDs are the only supported style references in SwiftUI code:
+
+```swift
+public enum AccountThemeStyles {
+    public static let title = ThemeStyleID("account.TitleRW")
+    public static let body = ThemeStyleID("account.BodyBR")
+}
+```
+
+Module providers must register into the core manager before their views render:
+
+```swift
+public struct AccountThemeProvider: ThemeModuleProviding {
+    public let namespace = "account"
+    public let themeData: Data
+}
+
+try ThemesManager.register(AccountThemeProvider(themeData: generatedThemeData))
+```
+
+The manager namespaces module-local style keys as `namespace.styleName` when it consolidates module styles. Generated IDs must use that same namespaced value. Do not allow feature modules to install independent theme managers or bypass the consolidated registry.
 
 ---
 

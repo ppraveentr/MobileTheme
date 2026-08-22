@@ -11,8 +11,8 @@ import Theme
 struct ExTextView: View {
     enum Constants {
         static var themeFont: Appearance<Font> { .init(.largeTitle, dark: .headline) }
-        static let rwTitleStyle = "TitleRW"
-        static let brBodyStyle = "BodyBR"
+        static let rwTitleStyle = Theme.ThemeStyleID("TitleRW")
+        static let brBodyStyle = Theme.ThemeStyleID("BodyBR")
     }
 
     @AppStorage("isLightMode") var isLightMode: Bool = true

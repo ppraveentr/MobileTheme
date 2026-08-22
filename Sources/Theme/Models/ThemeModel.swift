@@ -12,6 +12,31 @@ public enum ThemeMode: String, Codable, Sendable {
     case dark
 }
 
+public struct ThemeStyleID: RawRepresentable, Hashable, Sendable, ExpressibleByStringLiteral {
+    public let rawValue: String
+
+    public init(rawValue: String) {
+        self.rawValue = rawValue
+    }
+
+    public init(_ rawValue: String) {
+        self.rawValue = rawValue
+    }
+
+    public init(stringLiteral value: String) {
+        self.rawValue = value
+    }
+
+    func appendingState(_ viewState: ViewState) -> ThemeStyleID {
+        ThemeStyleID("\(rawValue)\(viewState.value)")
+    }
+}
+
+public protocol ThemeModuleProviding {
+    var namespace: String { get }
+    var themeData: Data { get }
+}
+
 enum ThemeResolutionError: LocalizedError, Equatable {
     case unsupportedSchemaVersion(Int)
     case missingPalette(String)
@@ -165,6 +190,17 @@ public class ThemeModel {
                 gradient: style.background?.gradient
             )
         }
+    }
+
+    func merge(_ moduleModel: ThemeModel, namespace: String) {
+        moduleModel.colors.forEach { colors[qualified($0.key, namespace: namespace)] = $0.value }
+        moduleModel.fonts.forEach { fonts[qualified($0.key, namespace: namespace)] = $0.value }
+        moduleModel.styles.forEach { styles[qualified($0.key, namespace: namespace)] = $0.value }
+    }
+
+    private func qualified(_ key: String, namespace: String) -> String {
+        guard !namespace.isEmpty, !key.hasPrefix("\(namespace).") else { return key }
+        return "\(namespace).\(key)"
     }
 }
 

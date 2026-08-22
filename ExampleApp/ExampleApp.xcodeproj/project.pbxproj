@@ -18,6 +18,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		D4BD8BD4302EB85600559071 /* ExampleThemeStyles.generated.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExampleThemeStyles.generated.swift; sourceTree = "<group>"; };
 		D4FD491F302D51EE00FDE4BC /* copilot-instructions.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = "copilot-instructions.md"; sourceTree = "<group>"; };
 		DE00F3C828C457C1009C7AE5 /* ExampleApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ExampleApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		DE00F3CB28C457C1009C7AE5 /* ExampleApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExampleApp.swift; sourceTree = "<group>"; };
@@ -77,6 +78,7 @@
 				DE28811F28D566E6009E632C /* Resources */,
 				DE00F3D128C457C3009C7AE5 /* Preview Content */,
 				D4FD491F302D51EE00FDE4BC /* copilot-instructions.md */,
+				D4BD8BD4302EB85600559071 /* ExampleThemeStyles.generated.swift */,
 			);
 			path = ExampleApp;
 			sourceTree = "<group>";

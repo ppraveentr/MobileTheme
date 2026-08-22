@@ -37,20 +37,22 @@ App's styles are defined thorugh a JSON file, which can loaded once app is lanch
 We can load the json file into Manager as:
 ```swift
    guard let themeModel = try? Data.contentOfFile("Theme.json") else { return }
-   try? ThemesManager.loadThemeModel(themeModel)
+   try? ThemesManager.setupApplicationTheme(themeModel)
 }
 ```
 
-Configure the SwiftUI Text style as below:
+Use typed style IDs generated from the theme payload:
 ```swift
+    enum ExampleThemeStyles {
+        static let textRW = ThemeStyleID("TextRW")
+    }
+
     Toggle("Color Scheme", isOn: $isLightMode)
-      .theme(ColorSchemeValue(.title, dark: .headline))
+      .theme(Appearance(.title, dark: .headline))
     Text("Font as 'title' in LightMode and 'headline' in DarkMode")
-      .theme(ColorSchemeValue(.title, dark: .headline))
+      .theme(Appearance(.title, dark: .headline))
     Text("'Red' in LightMode and 'White' in DarkMode")
-      .style("TextRW")
-    Text("'Blue' in LightMode and 'Red' in DarkMode")
-      .theme(.foreground(color: .init(.blue, dark: .red)))
+      .style(ExampleThemeStyles.textRW)
 }
 ```
 
