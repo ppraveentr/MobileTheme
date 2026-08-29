@@ -39,43 +39,53 @@
     },
     "semantic": {
         "light": {
-            "surface.canvas": "{palette.neutral.50}",
-            "surface.raised": "{palette.neutral.0}",
-            "surface.selected": "{palette.accent.100}",
-            "text.primary": "{palette.neutral.900}",
-            "text.brand": "{palette.brand.600}",
-            "border.success": "{palette.status.success}"
+            "surfaceCanvas": "{palette.neutral.50}",
+            "surfaceRaised": "{palette.neutral.0}",
+            "surfaceSelected": "{palette.accent.100}",
+            "textNeutral": "{palette.neutral.900}",
+            "textBrand": "{palette.brand.600}",
+            "borderSuccess": "{palette.status.success}"
         },
         "dark": {
-            "surface.canvas": "{palette.neutral.900}",
-            "surface.raised": "{palette.neutral.50}",
-            "surface.selected": "{palette.accent.100}",
-            "text.primary": "{palette.neutral.0}",
-            "text.brand": "{palette.brand.600}",
-            "border.success": "{palette.status.success}"
+            "surfaceCanvas": "{palette.neutral.900}",
+            "surfaceRaised": "{palette.neutral.50}",
+            "surfaceSelected": "{palette.accent.100}",
+            "textNeutral": "{palette.neutral.0}",
+            "textBrand": "{palette.brand.600}",
+            "borderSuccess": "{palette.status.success}"
         }
     },
     "fonts": {
         "title": { "styleName": "title" },
         "body": { "styleName": "body" }
     },
+    "borders": {
+        "cardSuccess": {
+            "color": "borderSuccess",
+            "radius": [10, 0, 0, 10],
+            "thickness": 2
+        }
+    },
+    "backgrounds": {
+        "cardSelected": {
+            "color": "surfaceSelected",
+            "ignoringSafeArea": false
+        }
+    },
     "styles": {
-        "TitleRW": {
-            "forgroundColor": "text.primary",
-            "alignment": "center",
-            "font": "title",
-            "background": {
-                "color": "surface.selected",
-                "border": {
-                    "color": "border.success",
-                    "radius": [10, 0, 0, 10],
-                    "thickness": 2
-                }
+        "Label": {
+            "Base": {
+                "font": "title"
+            },
+            "Primary": {
+                "alignment": "center",
+                "font": "title",
+                "border": "cardSuccess",
+                "background": "cardSelected"
+            },
+            "Brand": {
+                "font": "body"
             }
-        },
-        "BodyBR": {
-            "forgroundColor": "text.brand",
-            "font": "body"
         }
     }
 }

@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		D4BD8BD5302EB85600559071 /* ExampleThemeStyles.generated.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4BD8BD4302EB85600559071 /* ExampleThemeStyles.generated.swift */; };
+		D4F0A8B5303106D100D31ABC /* AccountTheme.json in Resources */ = {isa = PBXBuildFile; fileRef = D4F0A8B4303106D100D31ABC /* AccountTheme.json */; };
 		DE00F3CC28C457C1009C7AE5 /* ExampleApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE00F3CB28C457C1009C7AE5 /* ExampleApp.swift */; };
 		DE00F3CE28C457C1009C7AE5 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE00F3CD28C457C1009C7AE5 /* ContentView.swift */; };
 		DE00F3D328C457C3009C7AE5 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = DE00F3D228C457C3009C7AE5 /* Preview Assets.xcassets */; };
@@ -19,6 +21,7 @@
 
 /* Begin PBXFileReference section */
 		D4BD8BD4302EB85600559071 /* ExampleThemeStyles.generated.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExampleThemeStyles.generated.swift; sourceTree = "<group>"; };
+		D4F0A8B4303106D100D31ABC /* AccountTheme.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = AccountTheme.json; sourceTree = "<group>"; };
 		D4FD491F302D51EE00FDE4BC /* copilot-instructions.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = "copilot-instructions.md"; sourceTree = "<group>"; };
 		DE00F3C828C457C1009C7AE5 /* ExampleApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ExampleApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		DE00F3CB28C457C1009C7AE5 /* ExampleApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExampleApp.swift; sourceTree = "<group>"; };
@@ -109,6 +112,7 @@
 		DE28811F28D566E6009E632C /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				D4F0A8B4303106D100D31ABC /* AccountTheme.json */,
 				DE28812028D566E6009E632C /* Theme.json */,
 				DE28812128D566E6009E632C /* Assets.xcassets */,
 			);
@@ -186,6 +190,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D4F0A8B5303106D100D31ABC /* AccountTheme.json in Resources */,
 				DE00F3D328C457C3009C7AE5 /* Preview Assets.xcassets in Resources */,
 				DE28812328D566E6009E632C /* Assets.xcassets in Resources */,
 				DE28812228D566E6009E632C /* Theme.json in Resources */,
@@ -222,6 +227,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D4BD8BD5302EB85600559071 /* ExampleThemeStyles.generated.swift in Sources */,
 				DE9F65F328D6BB2C00DA9989 /* NavigationContentView.swift in Sources */,
 				DE00F3CE28C457C1009C7AE5 /* ContentView.swift in Sources */,
 				DED6F28728D6A88C00AB7E5D /* ExTextView.swift in Sources */,

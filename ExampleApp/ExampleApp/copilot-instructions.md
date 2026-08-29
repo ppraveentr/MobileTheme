@@ -67,8 +67,8 @@ Generated style IDs are the only supported style references in SwiftUI code:
 
 ```swift
 public enum AccountThemeStyles {
-    public static let title = ThemeStyleID("account.TitleRW")
-    public static let body = ThemeStyleID("account.BodyBR")
+    public static let labelPrimary = ThemeStyleID("account.Label.Primary")
+    public static let labelBrand = ThemeStyleID("account.Label.Brand")
 }
 ```
 

@@ -12,49 +12,82 @@
 A way to organize and manage style across the application dynamically (dark and light mode).
 
 ### Usage
-App's styles are defined thorugh a JSON file, which can loaded once app is lanched.
+App styles are defined through a JSON theme file and loaded once at launch.
 
-#### Sample - Theme.Json
+#### Sample - Theme.json
 ```json
 {
-    "version": "1.0",
-    "colors": {
-        "white": "#FFFFFF",
-        "red": "#EE4B2B"
+    "schemaVersion": 1,
+    "themeId": "example-default",
+    "palettes": {
+        "light": { "neutral": { "0": "#FFFFFF", "900": "#000000" } },
+        "dark": { "neutral": { "0": "#FFFFFF", "900": "#121212" } }
+    },
+    "semantic": {
+        "light": { "textNeutral": "{palette.neutral.900}", "borderSuccess": "#44CC77" },
+        "dark": { "textNeutral": "{palette.neutral.0}", "borderSuccess": "#309053" }
     },
     "fonts": {
-        "subHeader": { "weight": "subheadline" }
+        "title": { "styleName": "title" }
+    },
+    "borders": {
+        "cardSuccess": { "color": "borderSuccess", "radius": [10, 10, 10, 10], "thickness": 2 }
+    },
+    "backgrounds": {
+        "cardSelected": { "color": "textNeutral", "ignoringSafeArea": false }
     },
     "styles": {
-        "TextRW": {
-            "forgroundColor": {"light": "red", "dark": "white"},
-            "font": "subHeader"
+        "Label": {
+            "Base": { "font": "title" },
+            "Primary": { "font": "title", "background": "cardSelected", "border": "cardSuccess" }
         }
     }
 }
 ```
 
-We can load the json file into Manager as:
+Load theme into the manager:
 ```swift
-   guard let themeModel = try? Data.contentOfFile("Theme.json") else { return }
-   try? ThemesManager.setupApplicationTheme(themeModel)
-}
+let themeData = try Data(contentsOf: themeURL)
+try await ThemesManager.setupApplicationTheme(themeData)
 ```
 
-Use typed style IDs generated from the theme payload:
+Generate module/brand-scoped APIs:
 ```swift
-    enum ExampleThemeStyles {
-        static let textRW = ThemeStyleID("TextRW")
-    }
-
-    Toggle("Color Scheme", isOn: $isLightMode)
-      .theme(Appearance(.title, dark: .headline))
-    Text("Font as 'title' in LightMode and 'headline' in DarkMode")
-      .theme(Appearance(.title, dark: .headline))
-    Text("'Red' in LightMode and 'White' in DarkMode")
-      .style(ExampleThemeStyles.textRW)
+struct AccountSemanticColors: SemanticColorSet {
+    @ColorValue(module: AccountThemeProvider.self, "text.primary")
+    var textPrimary: ColorID
 }
+
+enum AccountSemanticStyle {
+    @StyleValue(module: AccountThemeProvider.self, "Label.Primary")
+    static var labelPrimary: StyleSelection<AccountSemanticColors>
+}
+
+struct AccountThemeProvider: ThemeModuleProviding {
+    static let namespace = "account"
+    let themeData: Data
+}
+```
+Namespaced module registration is additive for styles: existing namespaced style IDs are not overridden.
+
+Use generated semantic style APIs:
+```swift
+Text("Primary")
+    .style(ExampleTheme.SemanticStyle.labelPrimary.textNeutral)
+
+Text("Base")
+    .style(ExampleTheme.SemanticStyle.labelBase)
 ```
 
 ![MobileTheme-Color-Font](https://user-images.githubusercontent.com/15041699/197370343-8bd27dcc-9f04-4b99-afdd-64b0030c08b9.gif)
 
+### Architecture
+- See [ARCHITECTURE.md](ARCHITECTURE.md) for model, resolution pipeline, caching, and module namespacing details.
+
+### TODO (Enterprise Scale)
+- Add build-time theme validation (missing refs, cycles, deprecated tokens).
+- Generate typed theme APIs per module/brand to avoid monolithic constants.
+- Support incremental/lazy loading of module theme payloads.
+- Add optional precompiled theme artifacts for faster startup.
+- Evolve cache strategy (bounded cache size and scoped invalidation).
+- Introduce token governance (versioning, deprecation, migration tooling).
