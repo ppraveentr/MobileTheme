@@ -5,7 +5,7 @@ import PackageDescription
 
 let package = Package(
     name: "MobileTheme",
-    platforms: [.iOS(.v17), .macOS(.v11)],
+    platforms: [.iOS(.v17), .macOS(.v12)],
     products: [
         .library(name: "MobileTheme", targets: ["Theme"])
     ],
