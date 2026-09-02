@@ -15,7 +15,7 @@ final class ThemesManagerTests: XCTestCase {
         XCTAssertNotNil(ThemesManager.shared)
     }
 
-private struct TestThemeModule: ThemeModuleProviding {
+struct TestThemeModule: ThemeModuleProviding {
     static let namespace = "account"
     let themeData: Data
 }
@@ -25,7 +25,7 @@ private struct BaseFallbackThemeModule: ThemeModuleProviding {
     let themeData: Data
 }
 
-private struct AccountSemanticColors: SemanticColorSet {
+struct AccountSemanticColors: SemanticColor {
     init() {}
 
     @ColorValue(module: TestThemeModule.self, "text.primary")
@@ -34,7 +34,7 @@ private struct AccountSemanticColors: SemanticColorSet {
 
 private enum AccountSemanticStyle {
     @StyleValue(module: TestThemeModule.self, "Label.Primary")
-    static var labelPrimary: StyleSelection<AccountSemanticColors>
+    static var labelPrimary: SemanticStyle<AccountSemanticColors>
 }
 
     func testGenerateModelResolvesSemanticColorsForLightAndDarkMode() throws {
@@ -80,6 +80,16 @@ private enum AccountSemanticStyle {
         let generatedStyleID = AccountSemanticStyle.labelPrimary.selection.semanticStyle.styleID
         XCTAssertEqual(generatedStyleID.rawValue, "account.Label.Primary")
         let style = await ThemesManager.style(generatedStyleID)
+        XCTAssertNotNil(style)
+    }
+
+    func testStaticMemberStyleSelectionSupportsLeadingDotSyntax() async throws {
+        try await ThemesManager.setupApplicationTheme(Self.semanticThemeData())
+        try await ThemesManager.register(TestThemeModule(themeData: Self.semanticThemeData()))
+
+        let selection: SemanticStyle<AccountSemanticColors> = .labelPrimaryDot
+        XCTAssertEqual(selection.selection.semanticStyle.styleID.rawValue, "account.Label.Primary")
+        let style = await ThemesManager.style(selection.selection.semanticStyle.styleID)
         XCTAssertNotNil(style)
     }
 
@@ -403,4 +413,8 @@ private enum AccountSemanticStyle {
         """
         return Data(json.utf8)
     }
+}
+
+extension SemanticStyle where Colors == ThemesManagerTests.AccountSemanticColors {
+    static var labelPrimaryDot: Self { .style(module: ThemesManagerTests.TestThemeModule.self, "Label.Primary") }
 }

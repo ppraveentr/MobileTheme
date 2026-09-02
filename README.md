@@ -58,11 +58,6 @@ struct AccountSemanticColors: SemanticColorSet {
     var textPrimary: ColorID
 }
 
-enum AccountSemanticStyle {
-    @StyleValue(module: AccountThemeProvider.self, "Label.Primary")
-    static var labelPrimary: StyleSelection<AccountSemanticColors>
-}
-
 struct AccountThemeProvider: ThemeModuleProviding {
     static let namespace = "account"
     let themeData: Data
@@ -70,14 +65,50 @@ struct AccountThemeProvider: ThemeModuleProviding {
 ```
 Namespaced module registration is additive for styles: existing namespaced style IDs are not overridden.
 
-Use generated semantic style APIs:
+#### Leading-dot style syntax (preferred)
+Declare generated members as static members on `SemanticStyle`, constrained
+to your semantic color set, using the same `@StyleValue` / `@ColorValue`
+property wrappers used everywhere else. This drops the namespacing type
+prefix at call sites and reads closest to a native SwiftUI modifier:
+```swift
+extension SemanticStyle where Colors == AccountSemanticColors {
+    @StyleValue("Label.Base")
+    static var labelBase: Self
+
+    @StyleValue(module: AccountThemeProvider.self, "Label.Primary")
+    static var labelPrimary: Self
+
+    @StyleValue(module: AccountThemeProvider.self, "Label.Brand")
+    static var labelBrand: Self
+}
+```
+Because call sites resolve the type from the `.style(...)` parameter, Swift's
+leading-dot (implicit member) lookup applies:
+```swift
+Toggle("Color Scheme", isOn: $isLightMode)
+    .style(.labelBase)
+
+Text("Text 'Blue' in LightMode and 'Red' in DarkMode")
+    .style(.labelBrand.textBrand)
+```
+Prefer this pattern for new generated code.
+
+#### Enum-namespaced style syntax (alternative)
+If you'd rather not add a `SemanticStyle` extension per color set, or you
+want call sites to read with an explicit, fully-qualified name, declare the
+same wrapper inside a plain enum instead:
+```swift
+enum AccountSemanticStyle {
+    @StyleValue(module: AccountThemeProvider.self, "Label.Primary")
+    static var labelPrimary: SemanticStyle<AccountSemanticColors>
+}
+```
 ```swift
 Text("Primary")
-    .style(ExampleTheme.SemanticStyle.labelPrimary.textNeutral)
-
-Text("Base")
-    .style(ExampleTheme.SemanticStyle.labelBase)
+    .style(AccountSemanticStyle.labelPrimary.textNeutral)
 ```
+The underlying wrapper, resolution, and caching behavior are identical either
+way.
 
 ![MobileTheme-Color-Font](https://user-images.githubusercontent.com/15041699/197370343-8bd27dcc-9f04-4b99-afdd-64b0030c08b9.gif)
 

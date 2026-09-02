@@ -107,12 +107,12 @@ public struct StyleSelectionValue: Hashable, Sendable {
     }
 }
 
-public protocol SemanticColorSet {
+public protocol SemanticColor {
     init()
 }
 
 @dynamicMemberLookup
-public struct StyleSelection<Colors: SemanticColorSet> {
+public struct SemanticStyle<Colors: SemanticColor> {
     public let selection: StyleSelectionValue
     private let semanticColors = Colors()
 
@@ -120,13 +120,31 @@ public struct StyleSelection<Colors: SemanticColorSet> {
         self.selection = selection
     }
 
-    public subscript(dynamicMember keyPath: KeyPath<Colors, ColorID>) -> StyleSelectionValue {
-        selection.semanticColor(semanticColors[keyPath: keyPath])
+    /// Returns `Self` (rather than ``StyleSelectionValue``) so that a chained
+    /// leading-dot expression like `.labelPrimary.textNeutral` still resolves
+    /// through the generic `style<Colors>(_:)` view modifier overload.
+    public subscript(dynamicMember keyPath: KeyPath<Colors, ColorID>) -> Self {
+        Self(selection: selection.semanticColor(semanticColors[keyPath: keyPath]))
+    }
+}
+
+public extension SemanticStyle {
+    /// Builds a semantic style selection from a raw style key.
+    /// Generated `where Colors == ...` extensions use this to expose
+    /// short-hand static members (for example `.labelBase`) so call sites
+    /// can write `.style(.labelBase)` without a namespacing type prefix.
+    static func style(_ rawValue: String) -> Self {
+        Self(selection: StyleSelectionValue(StyleScope(styleID: ThemeStyleID(rawValue: rawValue))))
+    }
+
+    /// Builds a module-namespaced semantic style selection from a raw style key.
+    static func style<Module: ThemeModuleProviding>(module: Module.Type, _ rawValue: String) -> Self {
+        style(Module.namespaced(rawValue))
     }
 }
 
 @propertyWrapper
-public struct StyleValue<Colors: SemanticColorSet>: Sendable {
+public struct StyleValue<Colors: SemanticColor>: Sendable {
     private let rawValue: String
 
     public init(_ rawValue: String) {
@@ -137,12 +155,12 @@ public struct StyleValue<Colors: SemanticColorSet>: Sendable {
         self.rawValue = Module.namespaced(rawValue)
     }
 
-    public init(wrappedValue: StyleSelection<Colors>, _ rawValue: String) {
+    public init(wrappedValue: SemanticStyle<Colors>, _ rawValue: String) {
         self.rawValue = rawValue
     }
 
-    public var wrappedValue: StyleSelection<Colors> {
-        StyleSelection(
+    public var wrappedValue: SemanticStyle<Colors> {
+        SemanticStyle(
             selection: StyleSelectionValue(
                 StyleScope(styleID: ThemeStyleID(rawValue: rawValue))
             )

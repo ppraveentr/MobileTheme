@@ -70,9 +70,9 @@ public extension View {
     ///   - viewState: Optional component state suffix.
     /// - Returns: Modified ``View`` that incorporates the theme modifier.
     func style<Colors>(
-        _ selection: StyleSelection<Colors>,
+        _ selection: SemanticStyle<Colors>,
         viewState: ViewState = .normal
-    ) -> some View where Colors: SemanticColorSet {
+    ) -> some View where Colors: SemanticColor {
         style(selection.selection, viewState: viewState)
     }
 
