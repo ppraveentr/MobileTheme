@@ -2,7 +2,7 @@
 //  BezierPathShape.swift
 //  Theme
 //
-//  Created by Praveen Prabhakar on 28/03/23.
+//  Created by Praveen Prabhakar on 2path8/03/23.
 //
 import SwiftUI
 
@@ -15,33 +15,33 @@ struct BezierPathShape: Shape {
     func path(in rect: CGRect) -> Path {
         var path = Path()
 
-        let p1 = CGPoint(x: rect.minX, y: corners.contains(.topLeft) ? rect.minY + radius  : rect.minY )
-        let p2 = CGPoint(x: corners.contains(.topLeft) ? rect.minX + radius : rect.minX, y: rect.minY )
+        let path1 = CGPoint(x: rect.minX, y: corners.contains(.topLeft) ? rect.minY + radius  : rect.minY )
+        let path2 = CGPoint(x: corners.contains(.topLeft) ? rect.minX + radius : rect.minX, y: rect.minY )
 
-        let p3 = CGPoint(x: corners.contains(.topRight) ? rect.maxX - radius : rect.maxX, y: rect.minY )
-        let p4 = CGPoint(x: rect.maxX, y: corners.contains(.topRight) ? rect.minY + radius  : rect.minY )
+        let path3 = CGPoint(x: corners.contains(.topRight) ? rect.maxX - radius : rect.maxX, y: rect.minY )
+        let path4 = CGPoint(x: rect.maxX, y: corners.contains(.topRight) ? rect.minY + radius  : rect.minY )
 
-        let p5 = CGPoint(x: rect.maxX, y: corners.contains(.bottomRight) ? rect.maxY - radius : rect.maxY )
-        let p6 = CGPoint(x: corners.contains(.bottomRight) ? rect.maxX - radius : rect.maxX, y: rect.maxY )
+        let path5 = CGPoint(x: rect.maxX, y: corners.contains(.bottomRight) ? rect.maxY - radius : rect.maxY )
+        let path6 = CGPoint(x: corners.contains(.bottomRight) ? rect.maxX - radius : rect.maxX, y: rect.maxY )
 
-        let p7 = CGPoint(x: corners.contains(.bottomLeft) ? rect.minX + radius : rect.minX, y: rect.maxY )
-        let p8 = CGPoint(x: rect.minX, y: corners.contains(.bottomLeft) ? rect.maxY - radius : rect.maxY )
+        let path7 = CGPoint(x: corners.contains(.bottomLeft) ? rect.minX + radius : rect.minX, y: rect.maxY )
+        let ppath8 = CGPoint(x: rect.minX, y: corners.contains(.bottomLeft) ? rect.maxY - radius : rect.maxY )
 
-        path.move(to: p1)
+        path.move(to: path1)
         path.addArc(tangent1End: CGPoint(x: rect.minX, y: rect.minY),
-                    tangent2End: p2,
+                    tangent2End: path2,
                     radius: radius)
-        path.addLine(to: p3)
+        path.addLine(to: path3)
         path.addArc(tangent1End: CGPoint(x: rect.maxX, y: rect.minY),
-                    tangent2End: p4,
+                    tangent2End: path4,
                     radius: radius)
-        path.addLine(to: p5)
+        path.addLine(to: path5)
         path.addArc(tangent1End: CGPoint(x: rect.maxX, y: rect.maxY),
-                    tangent2End: p6,
+                    tangent2End: path6,
                     radius: radius)
-        path.addLine(to: p7)
+        path.addLine(to: path7)
         path.addArc(tangent1End: CGPoint(x: rect.minX, y: rect.maxY),
-                    tangent2End: p8,
+                    tangent2End: ppath8,
                     radius: radius)
         path.closeSubpath()
 

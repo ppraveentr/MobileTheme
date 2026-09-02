@@ -1,0 +1,38 @@
+{
+    "schemaVersion": 1,
+    "themeId": "account-module",
+    "version": "1.0",
+    "fonts": {
+        "header": { "styleName": "title" },
+        "main": { "styleName": "body" }
+    },
+    "borders": {
+        "cardSuccess": {
+            "color": "borderSuccess",
+            "radius": [10, 10, 10, 10],
+            "thickness": 2
+        }
+    },
+    "backgrounds": {
+        "cardSelected": {
+            "color": "surfaceSelected",
+            "ignoringSafeArea": false
+        }
+    },
+    "styles": {
+        "Label": {
+            "Base": {
+                "font": "title"
+            },
+            "Primary": {
+                "alignment": "center",
+                "font": "header",
+                "border": "cardSuccess",
+                "background": "surfaceSelected"
+            },
+            "Brand": {
+                "font": "main"
+            }
+        }
+    }
+}
