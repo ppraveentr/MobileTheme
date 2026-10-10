@@ -12,7 +12,8 @@ final class StyleSnapshotTests: XCTestCase {
             imageData,
             expected: [
                 "b1cd46af20d1528b5e8663b582b77272e0275ff45f6ae00e2cd5355bb846bb13", // swift test
-                "2d7e7732f5638e0fa5a189c978678b92834c246ff4c80b32f68688095dfe05a0"  // xcodebuild test plan
+                "2d7e7732f5638e0fa5a189c978678b92834c246ff4c80b32f68688095dfe05a0", // xcodebuild test plan
+                "94d98c850ceb909204fa9b276b90d05692a2571eddb47bd13102145d94fd2c2c"
             ]
         )
     }
@@ -24,7 +25,8 @@ final class StyleSnapshotTests: XCTestCase {
             imageData,
             expected: [
                 "c8a8df864fc7056ef01a7b46ee7a98b21eb9b9dc0f17a1fd1ddee85060934076", // swift test
-                "db535ff7e26258d06b9f5bc377045913da9bec6d411bdbf0aff83a87380b45cc"  // xcodebuild test plan
+                "db535ff7e26258d06b9f5bc377045913da9bec6d411bdbf0aff83a87380b45cc", // xcodebuild test plan
+                "61ce39592dfc39a927282a1023c10f93a2b2c9a3acfa139d8c3a443d871e8ab4"
             ]
         )
     }
