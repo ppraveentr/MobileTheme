@@ -13,20 +13,8 @@ public extension Font {
         switch styleName {
         case "largeTitle":
             return .largeTitle
-        case "title":
+        case "title", "title2", "title3":
             return .title
-        case "title2":
-            if #available(iOS 14.0, macOS 11.0, *) {
-                return .title2
-            } else {
-                return .title
-            }
-        case "title3":
-            if #available(iOS 14.0, macOS 11.0, *) {
-                return .title3
-            } else {
-                return .title
-            }
         case "headline":
             return .headline
         case "subheadline":
@@ -37,14 +25,8 @@ public extension Font {
             return .callout
         case "footnote":
             return .footnote
-        case "caption":
+        case "caption", "caption2":
             return .caption
-        case "caption2":
-            if #available(iOS 14.0, macOS 11.0, *) {
-                return .caption2
-            } else {
-                return .caption
-            }
         default:
             return nil
         }

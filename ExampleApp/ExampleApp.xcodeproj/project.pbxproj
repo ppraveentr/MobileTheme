@@ -3,35 +3,31 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 56;
+	objectVersion = 70;
 	objects = {
 
 /* Begin PBXBuildFile section */
-		DE00F3CC28C457C1009C7AE5 /* ExampleApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE00F3CB28C457C1009C7AE5 /* ExampleApp.swift */; };
-		DE00F3CE28C457C1009C7AE5 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE00F3CD28C457C1009C7AE5 /* ContentView.swift */; };
 		DE00F3D328C457C3009C7AE5 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = DE00F3D228C457C3009C7AE5 /* Preview Assets.xcassets */; };
-		DE28812228D566E6009E632C /* Theme.json in Resources */ = {isa = PBXBuildFile; fileRef = DE28812028D566E6009E632C /* Theme.json */; };
-		DE28812328D566E6009E632C /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = DE28812128D566E6009E632C /* Assets.xcassets */; };
 		DE99544229D9196D00F0C2A8 /* MobileTheme in Frameworks */ = {isa = PBXBuildFile; productRef = DE99544129D9196D00F0C2A8 /* MobileTheme */; };
-		DE9F65F328D6BB2C00DA9989 /* NavigationContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE9F65F228D6BB2C00DA9989 /* NavigationContentView.swift */; };
-		DED6F28728D6A88C00AB7E5D /* ExTextView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DED6F28628D6A88C00AB7E5D /* ExTextView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		D4C63E823048501300FD40FB /* ARCHITECTURE.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; name = ARCHITECTURE.md; path = ../ARCHITECTURE.md; sourceTree = SOURCE_ROOT; };
+		D4C63E833048501300FD40FB /* copilot-instructions.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; name = "copilot-instructions.md"; path = "../copilot-instructions.md"; sourceTree = SOURCE_ROOT; };
 		DE00F3C828C457C1009C7AE5 /* ExampleApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ExampleApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		DE00F3CB28C457C1009C7AE5 /* ExampleApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExampleApp.swift; sourceTree = "<group>"; };
-		DE00F3CD28C457C1009C7AE5 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		DE00F3D228C457C3009C7AE5 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		DE00F3D428C457C3009C7AE5 /* ExampleApp.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = ExampleApp.entitlements; sourceTree = "<group>"; };
 		DE00F3FC28C48378009C7AE5 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
-		DE28812028D566E6009E632C /* Theme.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = Theme.json; sourceTree = "<group>"; };
-		DE28812128D566E6009E632C /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		DE4E0FE629D910FB00CD1AA8 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; name = README.md; path = ../../README.md; sourceTree = "<group>"; };
 		DE99543F29D9131800F0C2A8 /* ExampleApp.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; path = ExampleApp.xctestplan; sourceTree = "<group>"; };
 		DE99544029D9194200F0C2A8 /* MobileTheme */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = MobileTheme; path = ..; sourceTree = "<group>"; };
-		DE9F65F228D6BB2C00DA9989 /* NavigationContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavigationContentView.swift; sourceTree = "<group>"; };
-		DED6F28628D6A88C00AB7E5D /* ExTextView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExTextView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
+
+/* Begin PBXFileSystemSynchronizedRootGroup section */
+		D4C63E6C30484F5700FD40FB /* App */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = App; sourceTree = "<group>"; };
+		D4C63E7530484F7D00FD40FB /* Resources */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Resources; sourceTree = "<group>"; };
+		D4C63E843048504B00FD40FB /* Generated */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Generated; sourceTree = "<group>"; };
+/* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
 		DE00F3C528C457C1009C7AE5 /* Frameworks */ = {
@@ -48,6 +44,8 @@
 		DE00F3BF28C457C1009C7AE5 = {
 			isa = PBXGroup;
 			children = (
+				D4C63E823048501300FD40FB /* ARCHITECTURE.md */,
+				D4C63E833048501300FD40FB /* copilot-instructions.md */,
 				DE99543F29D9131800F0C2A8 /* ExampleApp.xctestplan */,
 				DE00F3F628C457D5009C7AE5 /* Packages */,
 				DE00F3CA28C457C1009C7AE5 /* ExampleApp */,
@@ -67,13 +65,12 @@
 		DE00F3CA28C457C1009C7AE5 /* ExampleApp */ = {
 			isa = PBXGroup;
 			children = (
+				D4C63E843048504B00FD40FB /* Generated */,
+				D4C63E6C30484F5700FD40FB /* App */,
 				DE4E0FE629D910FB00CD1AA8 /* README.md */,
-				DED6F28828D6A89300AB7E5D /* Views */,
 				DE00F3FC28C48378009C7AE5 /* Info.plist */,
-				DE00F3CB28C457C1009C7AE5 /* ExampleApp.swift */,
-				DE00F3CD28C457C1009C7AE5 /* ContentView.swift */,
 				DE00F3D428C457C3009C7AE5 /* ExampleApp.entitlements */,
-				DE28811F28D566E6009E632C /* Resources */,
+				D4C63E7530484F7D00FD40FB /* Resources */,
 				DE00F3D128C457C3009C7AE5 /* Preview Content */,
 			);
 			path = ExampleApp;
@@ -102,24 +99,6 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
-		DE28811F28D566E6009E632C /* Resources */ = {
-			isa = PBXGroup;
-			children = (
-				DE28812028D566E6009E632C /* Theme.json */,
-				DE28812128D566E6009E632C /* Assets.xcassets */,
-			);
-			path = Resources;
-			sourceTree = "<group>";
-		};
-		DED6F28828D6A89300AB7E5D /* Views */ = {
-			isa = PBXGroup;
-			children = (
-				DED6F28628D6A88C00AB7E5D /* ExTextView.swift */,
-				DE9F65F228D6BB2C00DA9989 /* NavigationContentView.swift */,
-			);
-			path = Views;
-			sourceTree = "<group>";
-		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -135,6 +114,11 @@
 			buildRules = (
 			);
 			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				D4C63E6C30484F5700FD40FB /* App */,
+				D4C63E7530484F7D00FD40FB /* Resources */,
+				D4C63E843048504B00FD40FB /* Generated */,
 			);
 			name = ExampleApp;
 			packageProductDependencies = (
@@ -152,7 +136,7 @@
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
 				LastSwiftUpdateCheck = 1340;
-				LastUpgradeCheck = 1340;
+				LastUpgradeCheck = 2700;
 				TargetAttributes = {
 					DE00F3C728C457C1009C7AE5 = {
 						CreatedOnToolsVersion = 13.4.1;
@@ -183,8 +167,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				DE00F3D328C457C3009C7AE5 /* Preview Assets.xcassets in Resources */,
-				DE28812328D566E6009E632C /* Assets.xcassets in Resources */,
-				DE28812228D566E6009E632C /* Theme.json in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -208,7 +190,8 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "export PATH=\"$PATH:/opt/homebrew/bin\"\nif which swiftlint > /dev/null; then\n  cd ..\n  swiftlint\nelse\n  echo \"warning: SwiftLint not installed, download from https://github.com/realm/SwiftLint\"\nfi\n";
+			shellScript = "
+";
 		};
 /* End PBXShellScriptBuildPhase section */
 
@@ -217,10 +200,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				DE9F65F328D6BB2C00DA9989 /* NavigationContentView.swift in Sources */,
-				DE00F3CE28C457C1009C7AE5 /* ContentView.swift in Sources */,
-				DED6F28728D6A88C00AB7E5D /* ExTextView.swift in Sources */,
-				DE00F3CC28C457C1009C7AE5 /* ExampleApp.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -231,6 +210,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++17";
@@ -261,8 +241,10 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = dwarf;
+				DEVELOPMENT_TEAM = W6W48SVQX7;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_NO_COMMON_BLOCKS = YES;
@@ -292,6 +274,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++17";
@@ -322,8 +305,10 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEVELOPMENT_TEAM = W6W48SVQX7;
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
@@ -352,17 +337,18 @@
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"ExampleApp/Preview Content\"";
-				DEVELOPMENT_TEAM = W6W48SVQX7;
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = ExampleApp/Info.plist;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.developer-tools";
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				IPHONEOS_DEPLOYMENT_TARGET = 17;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
+				MACOSX_DEPLOYMENT_TARGET = "$(RECOMMENDED_MACOSX_DEPLOYMENT_TARGET)";
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.ft.ExampleApp;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -382,17 +368,18 @@
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"ExampleApp/Preview Content\"";
-				DEVELOPMENT_TEAM = W6W48SVQX7;
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = ExampleApp/Info.plist;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.developer-tools";
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				IPHONEOS_DEPLOYMENT_TARGET = 17;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
+				MACOSX_DEPLOYMENT_TARGET = "$(RECOMMENDED_MACOSX_DEPLOYMENT_TARGET)";
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.ft.ExampleApp;
 				PRODUCT_NAME = "$(TARGET_NAME)";

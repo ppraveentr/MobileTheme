@@ -83,13 +83,13 @@ struct BorderStyleModifier_Previews: PreviewProvider {
 	static var previews: some View {
 		HStack {
 			Button("Cancel") {
-				print("")
+                debugPrint("")
 			}.padding()
 				.theme(.background(color: .init(.yellow, dark: .blue)))
 				.theme(cancelStyle)
 
 			Button("Done") {
-				print("")
+                debugPrint("")
 			}.padding()
 				.theme(doneStyle)
 		}

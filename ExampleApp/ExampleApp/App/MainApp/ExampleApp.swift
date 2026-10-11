@@ -22,9 +22,14 @@ struct ExampleApp: App {
 
 struct ThemeLoader {
     static let themeName = "Theme.json"
+    static let accountThemeName = "AccountTheme.json"
 
+    @MainActor
     static func setupApplicationTheme() async {
-        guard let themeModel = try? Data.contentOfFile(themeName) else { return }
-        try? ThemesManager.setupApplicationTheme(themeModel)
+        guard let baseThemeData = try? Data.contentOfFile(themeName) else { return }
+        try? await ThemesManager.setupApplicationTheme(baseThemeData)
+
+        guard let accountThemeData = try? Data.contentOfFile(accountThemeName) else { return }
+        try? await ThemesManager.register(AccountThemeProvider(themeData: accountThemeData))
     }
 }

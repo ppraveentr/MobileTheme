@@ -7,8 +7,23 @@
 
 import SwiftUI
 
+enum ThemeMergeError: LocalizedError, Equatable {
+    case duplicateStyle(String)
+
+    var errorDescription: String? {
+        switch self {
+        case let .duplicateStyle(styleID):
+            return "Cannot override an existing style during module merge: \(styleID)."
+        }
+    }
+}
+
 public class ThemeModel {
+    var themeId: String?
+    var schemaVersion: Int?
     var colors = [String: Appearance<Color>]()
+    var backgrounds = [String: StyleBackground]()
+    var borders = [String: StyleBorder]()
     var fonts = [String: Font]()
     var styles = [String: UserStyle]()
 
@@ -20,14 +35,42 @@ public class ThemeModel {
         var alignment: ThemeJSONModel.AlignmentModel?
     }
 
+    struct Lookup {
+        let primary: ThemeModel
+        let fallback: ThemeModel?
+
+        func color(_ key: String?) -> Appearance<Color>? {
+            guard let key else { return nil }
+            return primary.colors[key] ?? fallback?.colors[key]
+        }
+
+        func background(_ key: String?) -> StyleBackground? {
+            guard let key else { return nil }
+            return primary.backgrounds[key] ?? fallback?.backgrounds[key]
+        }
+
+        func border(_ key: String?) -> StyleBorder? {
+            guard let key else { return nil }
+            return primary.borders[key] ?? fallback?.borders[key]
+        }
+
+        func font(_ key: String?) -> Font? {
+            guard let key else { return nil }
+            return primary.fonts[key] ?? fallback?.fonts[key]
+        }
+    }
+
     public struct StyleBorder {
         var radius: [CGFloat]?
         var thickness: CGFloat?
         var color: Appearance<Color>?
 
-        static func create(_ borderStyle: ThemeJSONModel.BorderModel, model: ThemeModel) -> StyleBorder {
-            let boderColor = model.colors[borderStyle.color ?? ""]
-            return .init(radius: borderStyle.radius, thickness: borderStyle.thickness, color: boderColor)
+        static func create(
+            _ borderStyle: ThemeJSONModel.BorderModel,
+            lookup: Lookup
+        ) -> StyleBorder {
+            let borderColor = lookup.color(borderStyle.color)
+            return .init(radius: borderStyle.radius, thickness: borderStyle.thickness, color: borderColor)
         }
     }
 
@@ -36,50 +79,125 @@ public class ThemeModel {
         var ignoringSafeArea: Bool?
         var gradient: ThemeJSONModel.GradientModel?
 
-        static func create(_ style: ThemeJSONModel.UserStyleModel, model: ThemeModel) -> StyleBackground {
-            let bgLight = model.colors[style.background?.color ?? ""]
+        static func create(
+            _ backgroundStyle: ThemeJSONModel.BackgroundModel,
+            lookup: Lookup
+        ) -> StyleBackground {
+            let bgLight = lookup.color(backgroundStyle.color)
             return .init(
                 color: bgLight,
-                ignoringSafeArea: style.background?.ignoringSafeArea,
-                gradient: style.background?.gradient
+                ignoringSafeArea: backgroundStyle.ignoringSafeArea,
+                gradient: backgroundStyle.gradient
             )
         }
+    }
+
+    func merge(_ moduleModel: ThemeModel, namespace: String) throws {
+        let qualifiedStyles = moduleModel.styles.reduce(into: [String: UserStyle]()) { dictionary, entry in
+            dictionary[qualified(entry.key, namespace: namespace)] = entry.value
+        }
+        if let duplicateStyleID = qualifiedStyles.keys.sorted().first(where: { styles[$0] != nil }) {
+            throw ThemeMergeError.duplicateStyle(duplicateStyleID)
+        }
+
+        moduleModel.colors.forEach { colors[qualified($0.key, namespace: namespace)] = $0.value }
+        moduleModel.backgrounds.forEach { backgrounds[qualified($0.key, namespace: namespace)] = $0.value }
+        moduleModel.borders.forEach { borders[qualified($0.key, namespace: namespace)] = $0.value }
+        moduleModel.fonts.forEach { fonts[qualified($0.key, namespace: namespace)] = $0.value }
+        qualifiedStyles.forEach { styles[$0] = $1 }
+    }
+
+    private func qualified(_ key: String, namespace: String) -> String {
+        guard !namespace.isEmpty, !key.hasPrefix("\(namespace).") else { return key }
+        return "\(namespace).\(key)"
     }
 }
 
 /// Generate ``ThemeModel`` based on `json Data`
 extension ThemeModel {
-    static func generateModel(_ jsonData: Data) throws -> ThemeModel {
+    static func generateModel(_ jsonData: Data, mode: ThemeMode = .light, fallbackModel: ThemeModel? = nil) throws -> ThemeModel {
         let theme = try JSONDecoder().decode(ThemeJSONModel.self, from: jsonData)
-        let model = ThemeModel()
-            // Generate Colors
-        theme.colors?.forEach { model.colors[$0] = Color.style($1) }
-            // Generate Fonts
-        theme.fonts?.forEach { model.fonts[$0] = Font.style($1) }
-            // Generate Theme Style
-        theme.styles?.forEach { model.styles[$0] = Self.style($1, model: model) }
+        let resolver = ThemeResolver()
+        let model = try resolver.resolve(theme, mode: mode, fallbackModel: fallbackModel)
+
+        guard mode == .light, theme.semantic?[ThemeMode.dark.rawValue] != nil else {
+            return model
+        }
+
+        let darkColors = try resolver.resolve(theme, mode: .dark, fallbackModel: fallbackModel).colors
+        mergeDarkColors(into: model, darkColors: darkColors)
+        rebuildDerivedStyles(theme: theme, model: model, fallbackModel: fallbackModel)
         return model
     }
 
+    private static func mergeDarkColors(into model: ThemeModel, darkColors: [String: Appearance<Color>]) {
+        for (key, darkColor) in darkColors {
+            if var color = model.colors[key] {
+                color.dark = darkColor.light
+                model.colors[key] = color
+                continue
+            }
+            model.colors[key] = darkColor
+        }
+    }
+
+    private static func rebuildDerivedStyles(
+        theme: ThemeJSONModel,
+        model: ThemeModel,
+        fallbackModel: ThemeModel?
+    ) {
+        let lookup = Lookup(primary: model, fallback: fallbackModel)
+        model.backgrounds = (theme.backgrounds ?? [:]).reduce(into: [:]) { dictionary, entry in
+            dictionary[entry.key] = StyleBackground.create(entry.value, lookup: lookup)
+        }
+        model.borders = (theme.borders ?? [:]).reduce(into: [:]) { dictionary, entry in
+            dictionary[entry.key] = StyleBorder.create(entry.value, lookup: lookup)
+        }
+        model.styles = theme.flattenedStyles().reduce(into: [:]) { dictionary, entry in
+            dictionary[entry.key] = style(entry.value, lookup: lookup)
+        }
+    }
+
     /// Generate ``ThemeModel/UserStyle`` based on ``ThemeStructure.UserStyle``
-    private static
-    func style(_ style: ThemeJSONModel.UserStyleModel, model: ThemeModel) -> UserStyle? {
-            // Colors
-        let fgColor = model.colors[style.forgroundColor ?? ""]
-            // StyleBackground
-        let styleBackground = StyleBackground.create(style, model: model)
-            // User Style Setup
-        var userStyleValue = UserStyle(forground: fgColor, background: styleBackground)
-        userStyleValue.alignment = style.alignment
-            // StyleBorder
-        if let boder = style.background?.border {
-            userStyleValue.border = StyleBorder.create(boder, model: model)
-        }
-            // Fonts
-        if let font = model.fonts[style.font ?? ""] {
-            userStyleValue.font = Appearance(font, dark: nil)
-        }
-        return userStyleValue
+    static func style(
+        _ style: ThemeJSONModel.UserStyleModel,
+        lookup: Lookup
+    ) -> UserStyle {
+        let background = resolvedBackground(style.background, lookup: lookup)
+        let border = resolvedBorder(style: style, lookup: lookup)
+        let font = resolvedFont(style.font, lookup: lookup)
+        let foreground = lookup.color(style.forgroundColor)
+
+        return UserStyle(
+            forground: foreground,
+            background: background,
+            font: font,
+            border: border,
+            alignment: style.alignment
+        )
+    }
+
+    private static func resolvedBackground(
+        _ background: ThemeJSONModel.StyleBackgroundReferenceModel?,
+        lookup: Lookup
+    ) -> StyleBackground? {
+        background?.token.flatMap(lookup.background)
+            ?? background?.value.map { StyleBackground.create($0, lookup: lookup) }
+    }
+
+    private static func resolvedBorder(
+        style: ThemeJSONModel.UserStyleModel,
+        lookup: Lookup
+    ) -> StyleBorder? {
+        lookup.border(style.border)
+    }
+
+    private static func resolvedFont(
+        _ fontName: String?,
+        lookup: Lookup
+    ) -> Appearance<Font>? {
+        guard let font = lookup.font(fontName) else { return nil }
+        return Appearance(font, dark: nil)
     }
 }
 
@@ -102,13 +220,13 @@ extension Font {
 /// Generate ``Color`` based on `hex color`
 extension Color {
     static func style(_ name: String) -> Appearance<Color>? {
-        guard  name.hasPrefix("#") else { return nil }
+        guard name.hasPrefix("#") else { return nil }
         let colorNames = name.components(separatedBy: ",,")
         guard let light = colorNames.first else {
             return nil
         }
         var colors = Appearance<Color>(Color(hex: light))
-        if let dark = colorNames.last {
+        if colorNames.count > 1, let dark = colorNames.last {
             colors.dark = Color(hex: dark)
         }
         return colors
