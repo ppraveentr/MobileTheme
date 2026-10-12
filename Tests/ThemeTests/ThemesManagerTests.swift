@@ -64,6 +64,34 @@ private enum GeneratedStyleIDs {
         XCTAssertNotNil(style)
     }
 
+    func testRegisterJSONModuleUsesNamespaceDeclaredInThemePayload() async throws {
+        let moduleData = Data(
+            """
+            {
+                "schemaVersion": 1,
+                "themeId": "account-module",
+                "namespace": "account",
+                "styles": {
+                    "Label": {
+                        "Primary": { "forgroundColor": "text.primary" }
+                    }
+                },
+                "colors": {
+                    "text.primary": "#000000"
+                }
+            }
+            """.utf8
+        )
+
+        try await ThemesManager.setupApplicationTheme(Self.semanticThemeData())
+        try await ThemesManager.register(JSONThemeModuleProvider(themeData: moduleData))
+
+        let style = await ThemesManager.style(ThemeStyleID("account.Label.Primary"))
+        XCTAssertNotNil(style)
+        let color = await ThemesManager.color(ColorID("account.text.primary"))
+        XCTAssertNotNil(color)
+    }
+
     func testStyleModifierAcceptsTypedStyleIDAndColorOverride() {
         let styleID = GeneratedStyleIDs.labelPrimary
         let styledView = Text("Primary").style(styleID)

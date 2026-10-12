@@ -85,6 +85,19 @@ Namespaced module registration is additive for styles: existing namespaced
 style IDs are not overridden. The `SemanticStyle` / `@StyleValue` API remains
 available for existing call sites.
 
+For JSON-backed modules, declare the namespace in the module theme and register
+it with `JSONThemeModuleProvider`; the namespace is read from the payload rather
+than duplicated in a provider type:
+```json
+{
+  "themeId": "account-module",
+  "namespace": "account"
+}
+```
+```swift
+try await ThemesManager.register(JSONThemeModuleProvider(themeData: accountThemeData))
+```
+
 ![MobileTheme-Color-Font](https://user-images.githubusercontent.com/15041699/197370343-8bd27dcc-9f04-4b99-afdd-64b0030c08b9.gif)
 
 ### Architecture

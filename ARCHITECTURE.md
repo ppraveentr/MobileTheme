@@ -74,6 +74,8 @@ the `@StyleValue` / `@ColorValue` wrappers remain available for existing APIs.
 ## Module Composition
 - `ThemeModuleProviding` supports feature/module theme payloads (`namespace` +
   `themeData`).
+- `JSONThemeModuleProvider` reads its module namespace from the theme JSON
+  payload, avoiding a duplicated namespace literal in the provider.
 - `ThemesManager.register(_:)` generates the module's `ThemeModel` with the
   current base model as fallback, then merges it into the app theme.
 - Namespacing (`namespace.styleName`, `namespace.colorName`, etc.) prevents key

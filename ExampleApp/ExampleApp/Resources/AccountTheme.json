@@ -1,6 +1,7 @@
 {
     "schemaVersion": 1,
     "themeId": "account-module",
+    "namespace": "account",
     "version": "1.0",
     "fonts": {
         "header": { "styleName": "title" },

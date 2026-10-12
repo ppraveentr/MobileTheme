@@ -21,6 +21,7 @@ enum ThemeMergeError: LocalizedError, Equatable {
 public class ThemeModel {
     var themeId: String?
     var schemaVersion: Int?
+    var namespace: String?
     var colors = [String: Appearance<Color>]()
     var backgrounds = [String: StyleBackground]()
     var borders = [String: StyleBorder]()

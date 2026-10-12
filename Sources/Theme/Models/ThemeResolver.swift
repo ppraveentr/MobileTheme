@@ -48,6 +48,7 @@ struct ThemeResolver: ThemeResolving {
         let model = ThemeModel()
         model.themeId = payload.themeId
         model.schemaVersion = payload.schemaVersion
+        model.namespace = payload.namespace
 
         try validateSemanticOverrides(payload)
         let resolvedColors = try resolveColors(payload, mode: mode)

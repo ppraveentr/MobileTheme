@@ -149,6 +149,7 @@ struct ThemeJSONModel: Codable {
     var version: String?
     var schemaVersion: Int?
     var themeId: String?
+    var namespace: String?
     var palettes: [String: [String: [String: String]]]?
     var semantic: SemanticModel?
     var semanticOverrides: [String: [String: String]]?

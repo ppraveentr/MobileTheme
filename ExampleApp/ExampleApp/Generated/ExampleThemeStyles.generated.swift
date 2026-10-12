@@ -24,8 +24,3 @@ enum CoreTheme {
         static let textBrand = ColorID("textBrand")
     }
 }
-
-struct AccountThemeProvider: ThemeModuleProviding {
-    static let namespace = "account"
-    let themeData: Data
-}

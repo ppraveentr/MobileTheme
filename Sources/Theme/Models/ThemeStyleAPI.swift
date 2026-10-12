@@ -204,6 +204,16 @@ public protocol ThemeModuleProviding {
     var themeData: Data { get }
 }
 
+/// A module provider whose namespace is read from its theme JSON payload.
+public struct JSONThemeModuleProvider: ThemeModuleProviding {
+    public static let namespace = ""
+    public let themeData: Data
+
+    public init(themeData: Data) {
+        self.themeData = themeData
+    }
+}
+
 public extension ThemeModuleProviding {
     var namespace: String { Self.namespace }
 
