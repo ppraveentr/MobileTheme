@@ -38,21 +38,16 @@
         }
     },
     "semantic": {
-        "light": {
-            "surfaceCanvas": "{palette.neutral.50}",
-            "surfaceRaised": "{palette.neutral.0}",
-            "surfaceSelected": "{palette.accent.100}",
-            "textNeutral": "{palette.neutral.900}",
-            "textBrand": "{palette.brand.600}",
-            "borderSuccess": "{palette.status.success}"
-        },
+        "surfaceCanvas": "{palette.neutral.50}",
+        "surfaceRaised": "{palette.neutral.0}",
+        "surfaceSelected": "{palette.accent.100}",
+        "textNeutral": "{palette.neutral.900}",
+        "textBrand": "{palette.brand.600}",
+        "borderSuccess": "{palette.status.success}"
+    },
+    "semanticOverrides": {
         "dark": {
-            "surfaceCanvas": "{palette.neutral.900}",
-            "surfaceRaised": "{palette.neutral.50}",
-            "surfaceSelected": "{palette.accent.100}",
-            "textNeutral": "{palette.neutral.0}",
-            "textBrand": "{palette.brand.600}",
-            "borderSuccess": "{palette.status.success}"
+            "textNeutral": "{palette.neutral.0}"
         }
     },
     "fonts": {
@@ -86,6 +81,11 @@
             "Brand": {
                 "font": "body"
             }
+        },
+        "Button": {
+            "Primary": {
+                "font": "title"
+            },
         }
     }
 }

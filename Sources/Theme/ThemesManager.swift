@@ -32,7 +32,7 @@ public actor ThemesManager {
     public static func register(_ module: ThemeModuleProviding) async throws {
         let currentModel = await shared.themeModel ?? ThemeModel()
         let moduleModel = try ThemeModel.generateModel(module.themeData, fallbackModel: currentModel)
-        try currentModel.merge(moduleModel, namespace: module.namespace)
+        try currentModel.merge(moduleModel, namespace: moduleModel.namespace ?? module.namespace)
         await shared.setThemeModel(currentModel)
     }
 

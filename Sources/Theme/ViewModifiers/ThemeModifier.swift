@@ -40,6 +40,15 @@ private struct ResolvedStyleTaskID: Hashable {
 }
 
 public extension View {
+    /// Applies a generated, typed theme style identifier.
+    /// - Parameters:
+    ///   - styleID: Generated style identifier.
+    ///   - viewState: Optional component state suffix.
+    /// - Returns: Modified ``View`` that incorporates the theme modifier.
+    func style(_ styleID: ThemeStyleID, viewState: ViewState = .normal) -> some View {
+        style(StyleToken(styleID: styleID), viewState: viewState)
+    }
+
     /// Applies a generated semantic style token.
     /// - Parameters:
     ///   - semanticStyleToken: Generated semantic style token.

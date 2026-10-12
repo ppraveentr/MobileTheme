@@ -129,6 +129,11 @@ public struct SemanticStyle<Colors: SemanticColor> {
 }
 
 public extension SemanticStyle {
+    /// Builds a semantic style selection from a generated style identifier.
+    static func style(_ styleID: ThemeStyleID) -> Self {
+        Self(selection: StyleSelectionValue(StyleScope(styleID: styleID)))
+    }
+
     /// Builds a semantic style selection from a raw style key.
     /// Generated `where Colors == ...` extensions use this to expose
     /// short-hand static members (for example `.labelBase`) so call sites
@@ -202,6 +207,16 @@ public extension ThemeStyleID {
 public protocol ThemeModuleProviding {
     static var namespace: String { get }
     var themeData: Data { get }
+}
+
+/// A module provider whose namespace is read from its theme JSON payload.
+public struct JSONThemeModuleProvider: ThemeModuleProviding {
+    public static let namespace = ""
+    public let themeData: Data
+
+    public init(themeData: Data) {
+        self.themeData = themeData
+    }
 }
 
 public extension ThemeModuleProviding {

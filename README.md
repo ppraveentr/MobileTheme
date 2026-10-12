@@ -20,12 +20,21 @@ App styles are defined through a JSON theme file and loaded once at launch.
     "schemaVersion": 1,
     "themeId": "example-default",
     "palettes": {
-        "light": { "neutral": { "0": "#FFFFFF", "900": "#000000" } },
-        "dark": { "neutral": { "0": "#FFFFFF", "900": "#121212" } }
+        "light": {
+            "neutral": { "0": "#FFFFFF", "900": "#000000" },
+            "status": { "success": "#44CC77" }
+        },
+        "dark": {
+            "neutral": { "0": "#FFFFFF", "900": "#121212" },
+            "status": { "success": "#309053" }
+        }
     },
     "semantic": {
-        "light": { "textNeutral": "{palette.neutral.900}", "borderSuccess": "#44CC77" },
-        "dark": { "textNeutral": "{palette.neutral.0}", "borderSuccess": "#309053" }
+        "textNeutral": "{palette.neutral.900}",
+        "borderSuccess": "{palette.status.success}"
+    },
+    "semanticOverrides": {
+        "dark": { "textNeutral": "{palette.neutral.0}" }
     },
     "fonts": {
         "title": { "styleName": "title" }
@@ -44,6 +53,8 @@ App styles are defined through a JSON theme file and loaded once at launch.
     }
 }
 ```
+`semanticOverrides` may only replace names already declared in `semantic`; it
+cannot introduce additional semantic colors.
 
 Load theme into the manager:
 ```swift
@@ -51,64 +62,42 @@ let themeData = try Data(contentsOf: themeURL)
 try await ThemesManager.setupApplicationTheme(themeData)
 ```
 
-Generate module/brand-scoped APIs:
+Generated style APIs expose typed `ThemeStyleID` constants and bind them to
+dot-syntax style members, while `.style(...)` remains usable with a typed
+identifier directly:
 ```swift
-struct AccountSemanticColors: SemanticColorSet {
-    @ColorValue(module: AccountThemeProvider.self, "text.primary")
-    var textPrimary: ColorID
+extension SemanticStyle where Colors == CoreTheme.ColorSet {
+    static var labelPrimary: Self { .style(CoreTheme.Styles.labelPrimary) }
 }
 
-struct AccountThemeProvider: ThemeModuleProviding {
-    static let namespace = "account"
-    let themeData: Data
-}
-```
-Namespaced module registration is additive for styles: existing namespaced style IDs are not overridden.
-
-#### Leading-dot style syntax (preferred)
-Declare generated members as static members on `SemanticStyle`, constrained
-to your semantic color set, using the same `@StyleValue` / `@ColorValue`
-property wrappers used everywhere else. This drops the namespacing type
-prefix at call sites and reads closest to a native SwiftUI modifier:
-```swift
-extension SemanticStyle where Colors == AccountSemanticColors {
-    @StyleValue("Label.Base")
-    static var labelBase: Self
-
-    @StyleValue(module: AccountThemeProvider.self, "Label.Primary")
-    static var labelPrimary: Self
-
-    @StyleValue(module: AccountThemeProvider.self, "Label.Brand")
-    static var labelBrand: Self
-}
-```
-Because call sites resolve the type from the `.style(...)` parameter, Swift's
-leading-dot (implicit member) lookup applies:
-```swift
-Toggle("Color Scheme", isOn: $isLightMode)
-    .style(.labelBase)
-
-Text("Text 'Blue' in LightMode and 'Red' in DarkMode")
-    .style(.labelBrand.textBrand)
-```
-Prefer this pattern for new generated code.
-
-#### Enum-namespaced style syntax (alternative)
-If you'd rather not add a `SemanticStyle` extension per color set, or you
-want call sites to read with an explicit, fully-qualified name, declare the
-same wrapper inside a plain enum instead:
-```swift
-enum AccountSemanticStyle {
-    @StyleValue(module: AccountThemeProvider.self, "Label.Primary")
-    static var labelPrimary: SemanticStyle<AccountSemanticColors>
-}
-```
-```swift
 Text("Primary")
-    .style(AccountSemanticStyle.labelPrimary.textNeutral)
+    .style(.labelPrimary)
 ```
-The underlying wrapper, resolution, and caching behavior are identical either
-way.
+Semantic color overrides remain typed with `ColorID`:
+```swift
+enum CoreThemeColors {
+    static let textNeutral = ColorID("textNeutral")
+}
+
+Text("Primary")
+    .style(.labelPrimary.textNeutral)
+```
+Namespaced module registration is additive for styles: existing namespaced
+style IDs are not overridden. The `SemanticStyle` / `@StyleValue` API remains
+available for existing call sites.
+
+For JSON-backed modules, declare the namespace in the module theme and register
+it with `JSONThemeModuleProvider`; the namespace is read from the payload rather
+than duplicated in a provider type:
+```json
+{
+  "themeId": "account-module",
+  "namespace": "account"
+}
+```
+```swift
+try await ThemesManager.register(JSONThemeModuleProvider(themeData: accountThemeData))
+```
 
 ![MobileTheme-Color-Font](https://user-images.githubusercontent.com/15041699/197370343-8bd27dcc-9f04-4b99-afdd-64b0030c08b9.gif)
 

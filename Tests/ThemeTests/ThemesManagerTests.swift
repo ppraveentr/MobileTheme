@@ -37,6 +37,11 @@ private enum AccountSemanticStyle {
     static var labelPrimary: SemanticStyle<AccountSemanticColors>
 }
 
+enum GeneratedStyleIDs {
+    static let labelPrimary = ThemeStyleID("Label.Primary")
+    static let accountLabelPrimary = ThemeStyleID("account.Label.Primary")
+}
+
     func testGenerateModelResolvesSemanticColorsForLightAndDarkMode() throws {
         let model = try ThemeModel.generateModel(Self.semanticThemeData())
 
@@ -58,6 +63,46 @@ private enum AccountSemanticStyle {
 
         let style = await ThemesManager.style(ThemeStyleID("account.Label.Primary"))
         XCTAssertNotNil(style)
+    }
+
+    func testRegisterJSONModuleUsesNamespaceDeclaredInThemePayload() async throws {
+        let moduleData = Data(
+            """
+            {
+                "schemaVersion": 1,
+                "themeId": "account-module",
+                "namespace": "account",
+                "styles": {
+                    "Label": {
+                        "Primary": { "forgroundColor": "text.primary" }
+                    }
+                },
+                "colors": {
+                    "text.primary": "#000000"
+                }
+            }
+            """.utf8
+        )
+
+        try await ThemesManager.setupApplicationTheme(Self.semanticThemeData())
+        try await ThemesManager.register(JSONThemeModuleProvider(themeData: moduleData))
+
+        let style = await ThemesManager.style(ThemeStyleID("account.Label.Primary"))
+        XCTAssertNotNil(style)
+        let color = await ThemesManager.color(ColorID("account.text.primary"))
+        XCTAssertNotNil(color)
+    }
+
+    func testStyleModifierAcceptsTypedStyleIDAndColorOverride() {
+        let styleID = GeneratedStyleIDs.labelPrimary
+        let styledView = Text("Primary").style(styleID)
+        let coloredView = Text("Primary").style(styleID[ColorID("text.primary")])
+        let dotStyleView = Text("Primary").style(.labelPrimaryDot.textPrimary)
+
+        XCTAssertEqual(styleID.rawValue, "Label.Primary")
+        _ = styledView
+        _ = coloredView
+        _ = dotStyleView
     }
 
     func testRegisterModuleCannotOverrideExistingNamespacedStyles() async throws {
@@ -120,6 +165,56 @@ private enum AccountSemanticStyle {
 
         XCTAssertThrowsError(try ThemeModel.generateModel(Data(json.utf8))) { error in
             XCTAssertEqual(error as? ThemeResolutionError, .missingToken("palette.neutral.900"))
+        }
+    }
+
+    func testGenerateModelResolvesSharedSemanticTokensWithModeOverrides() throws {
+        let json = """
+        {
+            "schemaVersion": 1,
+            "themeId": "shared-semantics",
+            "palettes": {
+                "light": {
+                    "neutral": { "0": "#FFFFFF", "50": "#F0F2F5", "900": "#000000" }
+                },
+                "dark": {
+                    "neutral": { "0": "#FFFFFF", "50": "#222222" }
+                }
+            },
+            "semantic": {
+                "surface.canvas": "{palette.neutral.50}",
+                "text.primary": "{palette.neutral.900}"
+            },
+            "semanticOverrides": {
+                "dark": {
+                    "text.primary": "{palette.neutral.0}"
+                }
+            }
+        }
+        """
+
+        let model = try ThemeModel.generateModel(Data(json.utf8))
+        XCTAssertNotNil(model.colors["surface.canvas"]?.dark)
+        XCTAssertNotNil(model.colors["text.primary"]?.dark)
+    }
+
+    func testGenerateModelRejectsSemanticOverrideForUndeclaredToken() throws {
+        let json = """
+        {
+            "schemaVersion": 1,
+            "semantic": {
+                "text.primary": "#000000"
+            },
+            "semanticOverrides": {
+                "dark": {
+                    "text.secondary": "#FFFFFF"
+                }
+            }
+        }
+        """
+
+        XCTAssertThrowsError(try ThemeModel.generateModel(Data(json.utf8))) { error in
+            XCTAssertEqual(error as? ThemeResolutionError, .unknownSemanticOverride("text.secondary"))
         }
     }
 
@@ -416,5 +511,5 @@ private enum AccountSemanticStyle {
 }
 
 extension SemanticStyle where Colors == ThemesManagerTests.AccountSemanticColors {
-    static var labelPrimaryDot: Self { .style(module: ThemesManagerTests.TestThemeModule.self, "Label.Primary") }
+    static var labelPrimaryDot: Self { .style(ThemesManagerTests.GeneratedStyleIDs.accountLabelPrimary) }
 }

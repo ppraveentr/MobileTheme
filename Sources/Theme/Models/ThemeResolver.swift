@@ -11,6 +11,7 @@ enum ThemeResolutionError: LocalizedError, Equatable {
     case unsupportedSchemaVersion(Int)
     case missingPalette(String)
     case missingToken(String)
+    case unknownSemanticOverride(String)
     case cyclicAlias(String)
     case invalidColor(String)
 
@@ -22,6 +23,8 @@ enum ThemeResolutionError: LocalizedError, Equatable {
             return "Missing palette for theme mode: \(mode)."
         case let .missingToken(token):
             return "Missing theme token: \(token)."
+        case let .unknownSemanticOverride(token):
+            return "Semantic override references an undeclared semantic token: \(token)."
         case let .cyclicAlias(token):
             return "Theme token contains a cyclic alias: \(token)."
         case let .invalidColor(value):
@@ -45,7 +48,9 @@ struct ThemeResolver: ThemeResolving {
         let model = ThemeModel()
         model.themeId = payload.themeId
         model.schemaVersion = payload.schemaVersion
+        model.namespace = payload.namespace
 
+        try validateSemanticOverrides(payload)
         let resolvedColors = try resolveColors(payload, mode: mode)
         resolvedColors.forEach { model.colors[$0.key] = $0.value }
         let lookup = ThemeModel.Lookup(primary: model, fallback: fallbackModel)
@@ -59,6 +64,25 @@ struct ThemeResolver: ThemeResolving {
         payload.fonts?.forEach { model.fonts[$0] = Font.style($1) }
         payload.flattenedStyles().forEach { model.styles[$0] = ThemeModel.style($1, lookup: lookup) }
         return model
+    }
+
+    private func validateSemanticOverrides(_ payload: ThemeJSONModel) throws {
+        guard let semanticOverrides = payload.semanticOverrides else { return }
+
+        var semanticTokenNames = Set<String>()
+        if let sharedSemantic = payload.semantic?.shared {
+            semanticTokenNames.formUnion(sharedSemantic.keys)
+        }
+        payload.semantic?.modes?.values.forEach {
+            semanticTokenNames.formUnion($0.keys)
+        }
+
+        for mode in semanticOverrides.keys.sorted() {
+            guard let modeOverrides = semanticOverrides[mode] else { continue }
+            for token in modeOverrides.keys.sorted() where !semanticTokenNames.contains(token) {
+                throw ThemeResolutionError.unknownSemanticOverride(token)
+            }
+        }
     }
 
     private func resolveColors(_ payload: ThemeJSONModel, mode: ThemeMode) throws -> [String: Appearance<Color>] {
@@ -76,10 +100,17 @@ struct ThemeResolver: ThemeResolving {
         }
 
         if let semantic = payload.semantic {
-            guard let modeSemantic = semantic[mode.rawValue] else {
+            if let sharedSemantic = semantic.shared {
+                tokens.merge(sharedSemantic) { _, semanticValue in semanticValue }
+            } else if let modeSemantic = semantic.modes?[mode.rawValue] {
+                tokens.merge(modeSemantic) { _, semanticValue in semanticValue }
+            } else if semantic.modes != nil {
                 throw ThemeResolutionError.missingPalette(mode.rawValue)
             }
-            modeSemantic.forEach { tokens[$0] = $1 }
+        }
+
+        if let modeOverrides = payload.semanticOverrides?[mode.rawValue] {
+            tokens.merge(modeOverrides) { _, semanticValue in semanticValue }
         }
 
         var resolvedHexValues = [String: String]()

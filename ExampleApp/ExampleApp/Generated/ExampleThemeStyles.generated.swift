@@ -9,6 +9,17 @@ import Foundation
 import Theme
 
 enum CoreTheme {
+    enum Styles {
+        static let labelBase = ThemeStyleID("Label.Base")
+        static let labelPrimary = ThemeStyleID("Label.Primary")
+        static let labelBrand = ThemeStyleID("Label.Brand")
+    }
+
+    enum Colors {
+        static let textNeutral = ColorID("textNeutral")
+        static let textBrand = ColorID("textBrand")
+    }
+
     struct ColorSet: SemanticColor {
         init() {}
 
@@ -21,30 +32,7 @@ enum CoreTheme {
 }
 
 extension SemanticStyle where Colors == CoreTheme.ColorSet {
-    @StyleValue("Label.Base")
-    static var labelBase: Self
-
-    @StyleValue("Label.Primary")
-    static var labelPrimary: Self
-
-    @StyleValue("Label.Brand")
-    static var labelBrand: Self
-}
-
-// AccountThemeProvider
-
-extension SemanticStyle where Colors == CoreTheme.ColorSet {
-    @StyleValue(module: AccountThemeProvider.self, "Label.Base")
-    static var accountLabelBase: Self
-
-    @StyleValue(module: AccountThemeProvider.self, "Label.Primary")
-    static var accountLabelPrimary: Self
-
-    @StyleValue(module: AccountThemeProvider.self, "Label.Brand")
-    static var accountLabelBrand: Self
-}
-
-struct AccountThemeProvider: ThemeModuleProviding {
-    static let namespace = "account"
-    let themeData: Data
+    static var labelBase: Self { .style(CoreTheme.Styles.labelBase) }
+    static var labelPrimary: Self { .style(CoreTheme.Styles.labelPrimary) }
+    static var labelBrand: Self { .style(CoreTheme.Styles.labelBrand) }
 }

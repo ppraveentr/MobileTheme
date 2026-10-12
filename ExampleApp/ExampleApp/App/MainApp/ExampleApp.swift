@@ -30,6 +30,6 @@ struct ThemeLoader {
         try? await ThemesManager.setupApplicationTheme(baseThemeData)
 
         guard let accountThemeData = try? Data.contentOfFile(accountThemeName) else { return }
-        try? await ThemesManager.register(AccountThemeProvider(themeData: accountThemeData))
+        try? await ThemesManager.register(JSONThemeModuleProvider(themeData: accountThemeData))
     }
 }

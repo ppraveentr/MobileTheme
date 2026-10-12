@@ -22,60 +22,31 @@
    `ThemeModel.Lookup` (module-first, falling back to a base model when set).
 
 ## Style Application API
-Two ways to define generated, typed style access. Both resolve through the
-same `View.style(_:)` overloads and `ThemesManager` lookup path, and both are
-backed by the same `@StyleValue` / `@ColorValue` property wrappers — the
-difference is purely where the generated static member is declared.
-
-### 1. Leading-dot static members on `SemanticStyle` (preferred)
-Declare generated members as static members on `SemanticStyle`, constrained
-by `where Colors == ...`. This lets call sites use SwiftUI's implicit-member
-(leading-dot) syntax without any namespacing type prefix, which keeps call
-sites shortest and reads closest to a native SwiftUI modifier:
+Generated style APIs expose typed `ThemeStyleID` constants and bind them to
+dot-syntax `SemanticStyle` members. `View.style(_:)` still accepts a
+`ThemeStyleID` or `StyleToken` directly, so typed IDs and semantic foreground
+overrides share the same lookup path:
 ```swift
-extension SemanticStyle where Colors == CoreTheme.SemanticColors {
-    @StyleValue("Label.Base")
-    static var labelBase: Self
+extension SemanticStyle where Colors == CoreTheme.ColorSet {
+    static var labelBase: Self { .style(CoreTheme.Styles.labelBase) }
+}
 
-    @StyleValue(module: AccountThemeProvider.self, "Label.Primary")
-    static var accountLabelPrimary: Self
+enum CoreThemeColors {
+    static let textNeutral = ColorID("textNeutral")
 }
 ```
 Usage:
 ```swift
 .style(.labelBase)
-.style(.labelPrimary.textNeutral)   // chained semantic color override
+.style(.labelPrimary.textNeutral)
 ```
-This works because `SemanticStyle.subscript(dynamicMember:)` returns `Self`
-(not `StyleSelectionValue`), so a chained implicit-member expression still
-type-checks against the generic `style<Colors>(_:)` view modifier overload.
-
-Prefer this pattern for new generated code and new components. Use it unless
-a call site specifically benefits from an explicit, fully-qualified name (see
-below).
-
-### 2. Enum-namespaced (`@StyleValue` / `@ColorValue`) — alternative
-If you don't want to add an `extension SemanticStyle where Colors == ...`
-per color set (for example, to avoid widening `SemanticStyle`'s public
-static-member surface, or because you want call sites to read with an
-explicit, self-documenting name instead of a bare leading dot), declare the
-same wrapper inside a plain enum instead:
-```swift
-enum AppSemanticStyle {
-    @StyleValue("Label.Primary")
-    static var labelPrimary: SemanticStyle<SemanticColors>
-}
-```
-Usage: `.style(AppSemanticStyle.labelPrimary)`.
-
-Choose this option when a named, fully-qualified reference is preferred over
-the shorthand leading-dot form — the underlying wrapper, resolution, and
-caching behavior are identical either way.
+The IDs are declared in generated Swift, allowing call sites to refer to a
+named typed value instead of spelling the token string. `SemanticStyle` and
+the `@StyleValue` / `@ColorValue` wrappers remain available for existing APIs.
 
 ### Common building blocks
-- `StyleValue<Colors>` / `ColorValue` property wrappers back both patterns.
-- Module/brand codegen uses `ThemeModuleProviding.namespace` directly in
-  wrappers, e.g. `@StyleValue(module: AccountThemeProvider.self, "Label.Primary")`.
+- `StyleValue<Colors>` / `ColorValue` property wrappers support legacy
+  `SemanticStyle` APIs.
 - `SemanticStyle.style(_:)` / `.style(module:_:)` static builders construct a
   selection from a raw key; `StyleValue.wrappedValue` calls into these.
 - Views apply style via:
@@ -103,6 +74,8 @@ caching behavior are identical either way.
 ## Module Composition
 - `ThemeModuleProviding` supports feature/module theme payloads (`namespace` +
   `themeData`).
+- `JSONThemeModuleProvider` reads its module namespace from the theme JSON
+  payload, avoiding a duplicated namespace literal in the provider.
 - `ThemesManager.register(_:)` generates the module's `ThemeModel` with the
   current base model as fallback, then merges it into the app theme.
 - Namespacing (`namespace.styleName`, `namespace.colorName`, etc.) prevents key

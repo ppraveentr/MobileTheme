@@ -21,6 +21,7 @@ enum ThemeMergeError: LocalizedError, Equatable {
 public class ThemeModel {
     var themeId: String?
     var schemaVersion: Int?
+    var namespace: String?
     var colors = [String: Appearance<Color>]()
     var backgrounds = [String: StyleBackground]()
     var borders = [String: StyleBorder]()
@@ -120,7 +121,12 @@ extension ThemeModel {
         let resolver = ThemeResolver()
         let model = try resolver.resolve(theme, mode: mode, fallbackModel: fallbackModel)
 
-        guard mode == .light, theme.semantic?[ThemeMode.dark.rawValue] != nil else {
+        let hasDarkSemantic = theme.semantic?.modes?[ThemeMode.dark.rawValue] != nil
+        let hasDarkOverrides = theme.semanticOverrides?[ThemeMode.dark.rawValue] != nil
+        let hasSharedSemanticWithDarkPalette = theme.semantic?.shared != nil
+            && theme.palettes?[ThemeMode.dark.rawValue] != nil
+        guard mode == .light,
+            hasDarkSemantic || hasDarkOverrides || hasSharedSemanticWithDarkPalette else {
             return model
         }
 

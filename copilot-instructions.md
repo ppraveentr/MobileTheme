@@ -155,7 +155,7 @@ card.summary.title
 
 ### Theme structure
 
-Use one stable semantic contract. Light and dark modes provide different primitive or semantic mappings, while components retain the same logical style keys.
+Use one stable semantic contract. Shared semantic mappings reference the active mode's palette; `semanticOverrides` supplies only role mappings that intentionally differ by mode. Every override must target a name declared in `semantic`; overrides cannot introduce new semantic colors. Components retain the same logical style keys.
 
 ```json
 {
@@ -189,21 +189,18 @@ Use one stable semantic contract. Light and dark modes provide different primiti
     }
   },
   "semantic": {
-    "light": {
-      "surface.canvas": "{palette.neutral.0}",
-      "surface.raised": "{palette.neutral.50}",
-      "text.primary": "{palette.neutral.900}",
-      "text.secondary": "{palette.neutral.600}",
-      "action.primary.background": "{palette.brand.600}",
-      "action.primary.foreground": "{palette.neutral.0}"
-    },
+    "surface.canvas": "{palette.neutral.0}",
+    "surface.raised": "{palette.neutral.50}",
+    "text.primary": "{palette.neutral.900}",
+    "text.secondary": "{palette.neutral.600}",
+    "action.primary.background": "{palette.brand.600}",
+    "action.primary.foreground": "{palette.neutral.0}"
+  },
+  "semanticOverrides": {
     "dark": {
       "surface.canvas": "{palette.neutral.950}",
-      "surface.raised": "{palette.neutral.900}",
       "text.primary": "{palette.neutral.50}",
-      "text.secondary": "{palette.neutral.300}",
-      "action.primary.background": "{palette.brand.400}",
-      "action.primary.foreground": "{palette.neutral.950}"
+      "text.secondary": "{palette.neutral.300}"
     }
   },
   "components": {
@@ -262,13 +259,13 @@ Resolve the active mode in this order:
 
 1. User preference of `.light` or `.dark` wins.
 2. A `.system` preference uses SwiftUI `colorScheme`.
-3. Select the theme's palette and semantic mappings for the resulting mode.
+3. Select the theme's palette, then apply shared semantic mappings and the resulting mode's semantic overrides.
 4. Apply an increased-contrast override last, when supplied.
 5. Resolve component tokens after semantic tokens have been resolved.
 
 ### Requirements
 
-- A theme must provide intentional light and dark values for all required semantic color roles.
+- A theme must provide intentional light and dark values for all required semantic color roles through its palette and any necessary semantic overrides.
 - Do not automatically invert colors to generate dark mode.
 - Typography should normally be mode-independent.
 - Typography may vary by accessibility requirement only when explicitly designed and documented.
