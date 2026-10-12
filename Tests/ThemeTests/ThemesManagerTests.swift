@@ -37,8 +37,9 @@ private enum AccountSemanticStyle {
     static var labelPrimary: SemanticStyle<AccountSemanticColors>
 }
 
-private enum GeneratedStyleIDs {
+enum GeneratedStyleIDs {
     static let labelPrimary = ThemeStyleID("Label.Primary")
+    static let accountLabelPrimary = ThemeStyleID("account.Label.Primary")
 }
 
     func testGenerateModelResolvesSemanticColorsForLightAndDarkMode() throws {
@@ -96,10 +97,12 @@ private enum GeneratedStyleIDs {
         let styleID = GeneratedStyleIDs.labelPrimary
         let styledView = Text("Primary").style(styleID)
         let coloredView = Text("Primary").style(styleID[ColorID("text.primary")])
+        let dotStyleView = Text("Primary").style(.labelPrimaryDot.textPrimary)
 
         XCTAssertEqual(styleID.rawValue, "Label.Primary")
         _ = styledView
         _ = coloredView
+        _ = dotStyleView
     }
 
     func testRegisterModuleCannotOverrideExistingNamespacedStyles() async throws {
@@ -508,5 +511,5 @@ private enum GeneratedStyleIDs {
 }
 
 extension SemanticStyle where Colors == ThemesManagerTests.AccountSemanticColors {
-    static var labelPrimaryDot: Self { .style(module: ThemesManagerTests.TestThemeModule.self, "Label.Primary") }
+    static var labelPrimaryDot: Self { .style(ThemesManagerTests.GeneratedStyleIDs.accountLabelPrimary) }
 }

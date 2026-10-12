@@ -14,3 +14,9 @@ enum AccountTheme {
         static let labelBrand = ThemeStyleID("account.Label.Brand")
     }
 }
+
+extension SemanticStyle where Colors == CoreTheme.ColorSet {
+    static var accountLabelBase: Self { .style(AccountTheme.Styles.labelBase) }
+    static var accountLabelPrimary: Self { .style(AccountTheme.Styles.labelPrimary) }
+    static var accountLabelBrand: Self { .style(AccountTheme.Styles.labelBrand) }
+}

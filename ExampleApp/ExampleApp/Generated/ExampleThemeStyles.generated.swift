@@ -19,4 +19,20 @@ enum CoreTheme {
         static let textNeutral = ColorID("textNeutral")
         static let textBrand = ColorID("textBrand")
     }
+
+    struct ColorSet: SemanticColor {
+        init() {}
+
+        @ColorValue("textNeutral")
+        var textNeutral: ColorID
+
+        @ColorValue("textBrand")
+        var textBrand: ColorID
+    }
+}
+
+extension SemanticStyle where Colors == CoreTheme.ColorSet {
+    static var labelBase: Self { .style(CoreTheme.Styles.labelBase) }
+    static var labelPrimary: Self { .style(CoreTheme.Styles.labelPrimary) }
+    static var labelBrand: Self { .style(CoreTheme.Styles.labelBrand) }
 }
