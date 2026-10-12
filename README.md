@@ -65,12 +65,14 @@ try await ThemesManager.setupApplicationTheme(themeData)
 Generated style APIs expose `ThemeStyleID` constants, so `.style(...)` accepts
 a typed identifier rather than requiring a runtime string:
 ```swift
-enum AccountThemeStyles {
-    static let labelPrimary = ThemeStyleID("account.Label.Primary")
+enum AccountTheme {
+    enum Styles {
+        static let labelPrimary = ThemeStyleID("account.Label.Primary")
+    }
 }
 
 Text("Primary")
-    .style(AccountThemeStyles.labelPrimary)
+    .style(AccountTheme.Styles.labelPrimary)
 ```
 Semantic color overrides remain typed with `ColorID`:
 ```swift
@@ -79,7 +81,7 @@ enum CoreThemeColors {
 }
 
 Text("Primary")
-    .style(AccountThemeStyles.labelPrimary[CoreThemeColors.textNeutral])
+    .style(AccountTheme.Styles.labelPrimary[CoreThemeColors.textNeutral])
 ```
 Namespaced module registration is additive for styles: existing namespaced
 style IDs are not overridden. The `SemanticStyle` / `@StyleValue` API remains

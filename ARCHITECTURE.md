@@ -26,9 +26,16 @@ Generated style APIs expose typed `ThemeStyleID` constants. `View.style(_:)`
 accepts either a `ThemeStyleID` or a `StyleToken`, so standard styles and
 semantic foreground overrides share the same lookup path:
 ```swift
-enum CoreThemeStyles {
-    static let labelBase = ThemeStyleID("Label.Base")
-    static let accountLabelPrimary = ThemeStyleID("account.Label.Primary")
+enum CoreTheme {
+    enum Styles {
+        static let labelBase = ThemeStyleID("Label.Base")
+    }
+}
+
+enum AccountTheme {
+    enum Styles {
+        static let labelPrimary = ThemeStyleID("account.Label.Primary")
+    }
 }
 
 enum CoreThemeColors {
@@ -37,8 +44,8 @@ enum CoreThemeColors {
 ```
 Usage:
 ```swift
-.style(CoreThemeStyles.labelBase)
-.style(CoreThemeStyles.accountLabelPrimary[CoreThemeColors.textNeutral])
+.style(CoreTheme.Styles.labelBase)
+.style(AccountTheme.Styles.labelPrimary[CoreThemeColors.textNeutral])
 ```
 The IDs are declared in generated Swift, allowing call sites to refer to a
 named typed value instead of spelling the token string. `SemanticStyle` and
