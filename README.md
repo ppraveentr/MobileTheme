@@ -20,12 +20,21 @@ App styles are defined through a JSON theme file and loaded once at launch.
     "schemaVersion": 1,
     "themeId": "example-default",
     "palettes": {
-        "light": { "neutral": { "0": "#FFFFFF", "900": "#000000" } },
-        "dark": { "neutral": { "0": "#FFFFFF", "900": "#121212" } }
+        "light": {
+            "neutral": { "0": "#FFFFFF", "900": "#000000" },
+            "status": { "success": "#44CC77" }
+        },
+        "dark": {
+            "neutral": { "0": "#FFFFFF", "900": "#121212" },
+            "status": { "success": "#309053" }
+        }
     },
     "semantic": {
-        "light": { "textNeutral": "{palette.neutral.900}", "borderSuccess": "#44CC77" },
-        "dark": { "textNeutral": "{palette.neutral.0}", "borderSuccess": "#309053" }
+        "textNeutral": "{palette.neutral.900}",
+        "borderSuccess": "{palette.status.success}"
+    },
+    "semanticOverrides": {
+        "dark": { "textNeutral": "{palette.neutral.0}" }
     },
     "fonts": {
         "title": { "styleName": "title" }
@@ -44,6 +53,8 @@ App styles are defined through a JSON theme file and loaded once at launch.
     }
 }
 ```
+`semanticOverrides` may only replace names already declared in `semantic`; it
+cannot introduce additional semantic colors.
 
 Load theme into the manager:
 ```swift

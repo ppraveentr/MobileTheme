@@ -123,6 +123,56 @@ private enum AccountSemanticStyle {
         }
     }
 
+    func testGenerateModelResolvesSharedSemanticTokensWithModeOverrides() throws {
+        let json = """
+        {
+            "schemaVersion": 1,
+            "themeId": "shared-semantics",
+            "palettes": {
+                "light": {
+                    "neutral": { "0": "#FFFFFF", "50": "#F0F2F5", "900": "#000000" }
+                },
+                "dark": {
+                    "neutral": { "0": "#FFFFFF", "50": "#222222" }
+                }
+            },
+            "semantic": {
+                "surface.canvas": "{palette.neutral.50}",
+                "text.primary": "{palette.neutral.900}"
+            },
+            "semanticOverrides": {
+                "dark": {
+                    "text.primary": "{palette.neutral.0}"
+                }
+            }
+        }
+        """
+
+        let model = try ThemeModel.generateModel(Data(json.utf8))
+        XCTAssertNotNil(model.colors["surface.canvas"]?.dark)
+        XCTAssertNotNil(model.colors["text.primary"]?.dark)
+    }
+
+    func testGenerateModelRejectsSemanticOverrideForUndeclaredToken() throws {
+        let json = """
+        {
+            "schemaVersion": 1,
+            "semantic": {
+                "text.primary": "#000000"
+            },
+            "semanticOverrides": {
+                "dark": {
+                    "text.secondary": "#FFFFFF"
+                }
+            }
+        }
+        """
+
+        XCTAssertThrowsError(try ThemeModel.generateModel(Data(json.utf8))) { error in
+            XCTAssertEqual(error as? ThemeResolutionError, .unknownSemanticOverride("text.secondary"))
+        }
+    }
+
     func testGenerateModelFailsForCyclicAlias() throws {
         let json = """
         {

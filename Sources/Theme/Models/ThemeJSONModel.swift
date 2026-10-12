@@ -9,6 +9,31 @@ import Foundation
 import SwiftUI
 
 struct ThemeJSONModel: Codable {
+    struct SemanticModel: Codable {
+        var shared: [String: String]?
+        var modes: [String: [String: String]]?
+
+        init(from decoder: Decoder) throws {
+            let container = try decoder.singleValueContainer()
+            if let shared = try? container.decode([String: String].self) {
+                self.shared = shared
+                self.modes = nil
+            } else {
+                self.shared = nil
+                self.modes = try container.decode([String: [String: String]].self)
+            }
+        }
+
+        func encode(to encoder: Encoder) throws {
+            var container = encoder.singleValueContainer()
+            if let shared {
+                try container.encode(shared)
+            } else {
+                try container.encode(modes ?? [:])
+            }
+        }
+    }
+
     struct FontModel: Codable {
         var size: CGFloat?
         /// Based on ``Font/Weight``
@@ -125,7 +150,8 @@ struct ThemeJSONModel: Codable {
     var schemaVersion: Int?
     var themeId: String?
     var palettes: [String: [String: [String: String]]]?
-    var semantic: [String: [String: String]]?
+    var semantic: SemanticModel?
+    var semanticOverrides: [String: [String: String]]?
     var colors: [String: String]?
     var backgrounds: [String: BackgroundModel]?
     var borders: [String: BorderModel]?
