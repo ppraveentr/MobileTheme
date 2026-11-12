@@ -92,6 +92,18 @@ public class ThemeModel {
         }
     }
 
+    func copy() -> ThemeModel {
+        let model = ThemeModel()
+        model.themeId = themeId
+        model.schemaVersion = schemaVersion
+        model.colors = colors
+        model.backgrounds = backgrounds
+        model.borders = borders
+        model.fonts = fonts
+        model.styles = styles
+        return model
+    }
+
     func merge(_ moduleModel: ThemeModel, namespace: String) throws {
         let qualifiedStyles = moduleModel.styles.reduce(into: [String: UserStyle]()) { dictionary, entry in
             dictionary[qualified(entry.key, namespace: namespace)] = entry.value

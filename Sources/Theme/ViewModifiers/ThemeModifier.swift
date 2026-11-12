@@ -13,6 +13,7 @@ public struct ThemeModifier: ViewModifier {
     let foregroundColorID: ColorID?
     let viewState: ViewState
 
+    @Environment(\.themesManager) private var manager
     @State private var themeStyle: ThemeModel.UserStyle?
 
     public func body(content: Content) -> some View {
@@ -21,7 +22,7 @@ public struct ThemeModifier: ViewModifier {
         let backGroundStyle = themeStyle?.background
         return content
             .task(id: taskID) {
-            themeStyle = await ThemesManager.resolvedStyle(
+            themeStyle = await manager.resolvedStyle(
                 styleID: resolvedStyleID,
                 foregroundColorID: foregroundColorID
             )

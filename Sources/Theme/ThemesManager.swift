@@ -10,11 +10,15 @@ import SwiftUI
 
 public actor ThemesManager {
     public static let shared = ThemesManager()
+
     private var themeModel: ThemeModel?
-    private var styleCache: [ResolvedStyleCacheKey: ThemeModel.UserStyle] = [:]
+    private var styleCache = BoundedCache<ResolvedStyleCacheKey, ThemeModel.UserStyle>(capacity: 512)
     private var themeVersion: UInt64 = 0
 
-    private init() {}
+    /// Creates an isolated manager, e.g. for another brand, window, preview or test.
+    init(cacheCapacity: Int = 512) {
+        styleCache = BoundedCache(capacity: cacheCapacity)
+    }
 
 /// Call this function to generate `ColorSchemeValue: ThemeModel`,
 /// For `light` and `dark` style from Data dictionary ofType`ThemeDic`
@@ -22,18 +26,31 @@ public actor ThemesManager {
 /// - Parameters:
 ///   - jsonData: `ColorSchemeValue<Data>` of json  for `light` and `dark` style
     public static func setupApplicationTheme(_ jsonData: Data) async throws {
-        let model = try ThemeModel.generateModel(jsonData)
-        await shared.setThemeModel(model)
+        try await shared.setup(jsonData)
+    }
+
+    /// Instance variant of ``setupApplicationTheme(_:)`` for isolated managers.
+    func setup(_ jsonData: Data) throws {
+        setThemeModel(try ThemeModel.generateModel(jsonData))
     }
 
 /// Registers a module-owned theme payload into the consolidated application theme.
 /// Module styles are namespaced as `moduleNamespace.styleName` during registration.
 /// Generated module style IDs must use the same namespaced value.
     public static func register(_ module: ThemeModuleProviding) async throws {
-        let currentModel = await shared.themeModel ?? ThemeModel()
-        let moduleModel = try ThemeModel.generateModel(module.themeData, fallbackModel: currentModel)
-        try currentModel.merge(moduleModel, namespace: module.namespace)
-        await shared.setThemeModel(currentModel)
+        try await shared.register(namespace: module.namespace, themeData: module.themeData)
+    }
+
+    /// Composes a new model snapshot; the live model is only replaced if every step succeeds.
+    func register(namespace: String, themeData: Data) throws {
+        let currentModel = themeModel ?? ThemeModel()
+        let moduleModel = try ThemeModel.generateModel(themeData, fallbackModel: currentModel)
+        let composed = currentModel.copy()
+        try composed.merge(moduleModel, namespace: namespace)
+        themeModel = composed
+        // Registration only adds namespaced keys, so other cached styles stay valid.
+        let prefix = "\(namespace)."
+        styleCache.removeAll { $0.styleID.hasPrefix(prefix) }
     }
 
     private func setThemeModel(_ model: ThemeModel) {
@@ -71,13 +88,13 @@ extension ThemesManager {
         await shared.resolvedStyle(styleID: styleID, foregroundColorID: foregroundColorID)
     }
 
-    private func resolvedStyle(styleID: ThemeStyleID, foregroundColorID: ColorID?) -> ThemeModel.UserStyle? {
+    func resolvedStyle(styleID: ThemeStyleID, foregroundColorID: ColorID?) -> ThemeModel.UserStyle? {
         let key = ResolvedStyleCacheKey(
             themeVersion: themeVersion,
             styleID: styleID.rawValue,
             foregroundColorID: foregroundColorID?.rawValue
         )
-        if let cached = styleCache[key] {
+        if let cached = styleCache.value(for: key) {
             return cached
         }
 
@@ -87,7 +104,7 @@ extension ThemesManager {
         }
 
         if let resolvedStyle {
-            styleCache[key] = resolvedStyle
+            styleCache.insert(resolvedStyle, for: key)
         }
         return resolvedStyle
     }
