@@ -15,8 +15,12 @@ let package = Package(
     ],
     targets: [
         // Theme
-        .target(name: "Theme"),
-        .executableTarget(name: "ThemeCLI", dependencies: ["Theme"]),
+        // ThemeCore: pure Swift (no SwiftUI) schema + validation, usable from tooling on any platform
+        .target(name: "ThemeCore"),
+        // Theme: SwiftUI runtime (re-exports ThemeCore)
+        .target(name: "Theme", dependencies: ["ThemeCore"]),
+        .executableTarget(name: "ThemeCLI", dependencies: ["ThemeCore"]),
+        .testTarget(name: "ThemeCoreTests", dependencies: ["ThemeCore"]),
         .testTarget(name: "ThemeTests", dependencies: ["Theme"])
     ],
     swiftLanguageModes: [.v5]

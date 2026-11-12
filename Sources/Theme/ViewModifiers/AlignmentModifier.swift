@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import ThemeCore
 
 struct AlignmentModifier: ViewModifier {
     var themeValue: ThemeJSONModel.AlignmentModel?

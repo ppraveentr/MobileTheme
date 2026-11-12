@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import ThemeCore
 
 /// A modifier that applies a resolved theme style from the consolidated theme registry.
 public struct ThemeModifier: ViewModifier {

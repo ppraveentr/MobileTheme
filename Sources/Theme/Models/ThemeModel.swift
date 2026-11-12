@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import ThemeCore
 
 enum ThemeMergeError: LocalizedError, Equatable {
     case duplicateStyle(String)

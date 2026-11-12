@@ -1,44 +1,46 @@
 //
 //  ThemeValidator.swift
-//  Theme
+//  ThemeCore
 //
 
 import Foundation
 
 /// A single problem found while statically validating a theme payload.
-struct ThemeValidationIssue: Equatable, CustomStringConvertible {
-    enum Kind: String {
+public struct ThemeValidationIssue: Equatable, CustomStringConvertible {
+    public enum Kind: String {
         case missingToken
         case cyclicAlias
         case missingMode
         case modeMismatch
     }
 
-    let kind: Kind
+    public let kind: Kind
     /// Where the problem was found, e.g. `styles.Label.Primary.font`.
-    let location: String
-    let message: String
+    public let location: String
+    public let message: String
 
-    var description: String { "[\(kind.rawValue)] \(location): \(message)" }
+    public var description: String { "[\(kind.rawValue)] \(location): \(message)" }
 }
 
 /// Statically validates a theme payload and reports *all* problems at once,
 /// so CI/build tooling can fail early instead of at first runtime lookup.
-struct ThemeValidator {
+public struct ThemeValidator {
     /// Token names a module may reference but does not define itself
     /// (published base/semantic tokens), keyed by kind.
-    struct ExternalTokens {
-        var colors = Set<String>()
-        var backgrounds = Set<String>()
-        var borders = Set<String>()
-        var fonts = Set<String>()
-        init() {}
+    public struct ExternalTokens {
+        public var colors = Set<String>()
+        public var backgrounds = Set<String>()
+        public var borders = Set<String>()
+        public var fonts = Set<String>()
+        public init() {}
     }
 
     private let modes = ThemeMode.allCases.map(\.rawValue)
 
     /// Tokens a payload publishes, for use as the external set when validating a module against it.
-    func publishedTokens(of payload: ThemeJSONModel) -> ExternalTokens {
+    public init() {}
+
+    public func publishedTokens(of payload: ThemeJSONModel) -> ExternalTokens {
         var ignored = [ThemeValidationIssue]()
         var tokens = ExternalTokens()
         collectColorTokens(payload, issues: &ignored).values.forEach { tokens.colors.formUnion($0.keys) }
@@ -48,7 +50,7 @@ struct ThemeValidator {
         return tokens
     }
 
-    func validate(_ payload: ThemeJSONModel, external: ExternalTokens = .init()) -> [ThemeValidationIssue] {
+    public func validate(_ payload: ThemeJSONModel, external: ExternalTokens = .init()) -> [ThemeValidationIssue] {
         var issues = [ThemeValidationIssue]()
         let colorTokensByMode = collectColorTokens(payload, issues: &issues)
 

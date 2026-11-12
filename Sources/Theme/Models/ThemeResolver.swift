@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import ThemeCore
 
 enum ThemeResolutionError: LocalizedError, Equatable {
     case unsupportedSchemaVersion(Int)

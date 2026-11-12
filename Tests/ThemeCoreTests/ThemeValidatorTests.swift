@@ -1,10 +1,10 @@
 //
 //  ThemeValidatorTests.swift
-//  UnitTest
+//  ThemeCoreTests
 //
 
 import XCTest
-@testable import Theme
+@testable import ThemeCore
 
 final class ThemeValidatorTests: XCTestCase {
     private func payload(_ json: String) throws -> ThemeJSONModel {

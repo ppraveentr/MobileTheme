@@ -1,5 +1,5 @@
 import Foundation
-import Theme
+import ThemeCore
 
 // Usage: theme-cli validate [--base <base.json>] [--json] <theme.json>...
 let usage = "usage: theme-cli validate [--base <base.json>] [--json] <theme.json>..."

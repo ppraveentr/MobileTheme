@@ -1,6 +1,6 @@
 //
 //  ThemeValidation.swift
-//  Theme
+//  ThemeCore
 //
 
 import Foundation

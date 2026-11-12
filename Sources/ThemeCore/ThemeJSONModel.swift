@@ -1,40 +1,39 @@
 //
 //  ThemeJSONStructure.swift
-//  Theme
+//  ThemeCore
 //
 //  Created by Praveen Prabhakar on 16/09/22.
 //
 
 import Foundation
-import SwiftUI
 
-struct ThemeJSONModel: Codable {
-    struct FontModel: Codable {
-        var size: CGFloat?
+public struct ThemeJSONModel: Codable {
+    public struct FontModel: Codable {
+        public var size: CGFloat?
         /// Based on ``Font/Weight``
-        var weight: String?
+        public var weight: String?
         /// Based on ``Font/TextStyle``
-        var styleName: String?
+        public var styleName: String?
     }
 
-    struct ColorModel: Codable {
-        var light: String
-        var dark: String?
+    public struct ColorModel: Codable {
+        public var light: String
+        public var dark: String?
     }
 
-    struct UserStyleModel: Codable {
-        var forgroundColor: String?
-        var font: String?
-        var background: StyleBackgroundReferenceModel?
-        var border: String?
-        var alignment: AlignmentModel?
+    public struct UserStyleModel: Codable {
+        public var forgroundColor: String?
+        public var font: String?
+        public var background: StyleBackgroundReferenceModel?
+        public var border: String?
+        public var alignment: AlignmentModel?
     }
 
-    indirect enum StyleNode: Codable {
+    public indirect enum StyleNode: Codable {
         case style(UserStyleModel)
         case group([String: StyleNode])
 
-        init(from decoder: Decoder) throws {
+        public init(from decoder: Decoder) throws {
             let container = try decoder.singleValueContainer()
             if let group = try? container.decode([String: StyleNode].self) {
                 self = .group(group)
@@ -43,8 +42,8 @@ struct ThemeJSONModel: Codable {
             self = .style(try container.decode(UserStyleModel.self))
         }
 
-        func encode(to encoder: Encoder) throws {
-            var container = encoder.singleValueContainer()
+        public func encode(to encoder: Encoder) throws {
+            public var container = encoder.singleValueContainer()
             switch self {
             case let .style(style):
                 try container.encode(style)
@@ -54,9 +53,9 @@ struct ThemeJSONModel: Codable {
         }
     }
 
-    struct StyleBackgroundReferenceModel: Codable {
-        var token: String?
-        var value: BackgroundModel?
+    public struct StyleBackgroundReferenceModel: Codable {
+        public var token: String?
+        public var value: BackgroundModel?
 
         init(token: String) {
             self.token = token
@@ -68,7 +67,7 @@ struct ThemeJSONModel: Codable {
             self.value = value
         }
 
-        init(from decoder: Decoder) throws {
+        public init(from decoder: Decoder) throws {
             let container = try decoder.singleValueContainer()
             if let token = try? container.decode(String.self) {
                 self.init(token: token)
@@ -77,8 +76,8 @@ struct ThemeJSONModel: Codable {
             self.init(value: try container.decode(BackgroundModel.self))
         }
 
-        func encode(to encoder: Encoder) throws {
-            var container = encoder.singleValueContainer()
+        public func encode(to encoder: Encoder) throws {
+            public var container = encoder.singleValueContainer()
             if let token {
                 try container.encode(token)
                 return
@@ -89,51 +88,40 @@ struct ThemeJSONModel: Codable {
         }
     }
 
-    struct BackgroundModel: Codable {
-        var color: String?
-        var ignoringSafeArea: Bool?
-        var gradient: GradientModel?
+    public struct BackgroundModel: Codable {
+        public var color: String?
+        public var ignoringSafeArea: Bool?
+        public var gradient: GradientModel?
     }
 
-    struct GradientModel: Codable {
-        var colors: [String]
-        var locations: [CGFloat]?
+    public struct GradientModel: Codable {
+        public var colors: [String]
+        public var locations: [CGFloat]?
     }
 
-    struct BorderModel: Codable {
-        var radius: [CGFloat]?
-        var thickness: CGFloat?
-        var color: String?
+    public struct BorderModel: Codable {
+        public var radius: [CGFloat]?
+        public var thickness: CGFloat?
+        public var color: String?
     }
 
-    enum AlignmentModel: String, Codable {
+    public enum AlignmentModel: String, Codable {
         case left, center, right
-
-        var textAlignment: TextAlignment {
-            switch self {
-            case .left:
-                return .leading
-            case .center:
-                return .center
-            case .right:
-                return .trailing
-            }
-        }
     }
 
-    var version: String?
-    var schemaVersion: Int?
-    var themeId: String?
-    var palettes: [String: [String: [String: String]]]?
-    var semantic: [String: [String: String]]?
-    var colors: [String: String]?
-    var backgrounds: [String: BackgroundModel]?
-    var borders: [String: BorderModel]?
-    var fonts: [String: FontModel]?
-    var styles: [String: StyleNode]?
+    public var version: String?
+    public var schemaVersion: Int?
+    public var themeId: String?
+    public var palettes: [String: [String: [String: String]]]?
+    public var semantic: [String: [String: String]]?
+    public var colors: [String: String]?
+    public var backgrounds: [String: BackgroundModel]?
+    public var borders: [String: BorderModel]?
+    public var fonts: [String: FontModel]?
+    public var styles: [String: StyleNode]?
 }
 
-extension ThemeJSONModel {
+public extension ThemeJSONModel {
     func flattenedStyles() -> [String: UserStyleModel] {
         flatten(nodes: styles ?? [:], parentKey: nil)
     }
@@ -142,7 +130,7 @@ extension ThemeJSONModel {
         nodes: [String: StyleNode],
         parentKey: String?
     ) -> [String: UserStyleModel] {
-        var flattened = [String: UserStyleModel]()
+        public var flattened = [String: UserStyleModel]()
         for (key, node) in nodes {
             let composedKey = parentKey.map { "\($0).\(key)" } ?? key
             switch node {

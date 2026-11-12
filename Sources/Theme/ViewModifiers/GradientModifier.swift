@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import ThemeCore
 
 typealias StyleGradient = ThemeJSONModel.GradientModel
 

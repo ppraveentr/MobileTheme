@@ -6,11 +6,7 @@
 //
 
 import SwiftUI
-
-enum ThemeMode: String, Codable, Sendable, CaseIterable {
-    case light
-    case dark
-}
+import ThemeCore
 
 public struct ThemeStyleID: RawRepresentable, Hashable, Sendable, ExpressibleByStringLiteral {
     public let rawValue: String
