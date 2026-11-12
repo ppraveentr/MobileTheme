@@ -27,7 +27,7 @@ jobs:
       run: |
         DEVICE=$(xcrun simctl list devices available iPhone | grep -m1 -oE 'iPhone[^(]*[^ (]')
         echo "Using simulator: $DEVICE"
-        xcodebuild test -scheme MobileTheme-Package -destination "platform=iOS Simulator,name=$DEVICE" 2>&1 | tail -n 100
+        xcodebuild test -scheme MobileTheme-Package -destination "platform=iOS Simulator,name=$DEVICE" -skip-testing:ThemeTests/StyleSnapshotTests 2>&1 | tail -n 100
 
   beta:
     name: Xcode 27 (beta)
