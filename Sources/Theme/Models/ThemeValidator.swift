@@ -37,6 +37,17 @@ struct ThemeValidator {
 
     private let modes = ThemeMode.allCases.map(\.rawValue)
 
+    /// Tokens a payload publishes, for use as the external set when validating a module against it.
+    func publishedTokens(of payload: ThemeJSONModel) -> ExternalTokens {
+        var ignored = [ThemeValidationIssue]()
+        var tokens = ExternalTokens()
+        collectColorTokens(payload, issues: &ignored).values.forEach { tokens.colors.formUnion($0.keys) }
+        tokens.backgrounds = Set(payload.backgrounds?.keys ?? [:].keys)
+        tokens.borders = Set(payload.borders?.keys ?? [:].keys)
+        tokens.fonts = Set(payload.fonts?.keys ?? [:].keys)
+        return tokens
+    }
+
     func validate(_ payload: ThemeJSONModel, external: ExternalTokens = .init()) -> [ThemeValidationIssue] {
         var issues = [ThemeValidationIssue]()
         let colorTokensByMode = collectColorTokens(payload, issues: &issues)

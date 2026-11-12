@@ -7,7 +7,8 @@ let package = Package(
     name: "MobileTheme",
     platforms: [.iOS(.v17), .macOS(.v12)],
     products: [
-        .library(name: "MobileTheme", targets: ["Theme"])
+        .library(name: "MobileTheme", targets: ["Theme"]),
+        .executable(name: "theme-cli", targets: ["ThemeCLI"])
     ],
     dependencies: [
         // .package(url: "https://github.com/apple/swift-docc-plugin", branch: "main")
@@ -15,6 +16,7 @@ let package = Package(
     targets: [
         // Theme
         .target(name: "Theme"),
+        .executableTarget(name: "ThemeCLI", dependencies: ["Theme"]),
         .testTarget(name: "ThemeTests", dependencies: ["Theme"])
     ],
     swiftLanguageModes: [.v5]
