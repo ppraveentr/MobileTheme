@@ -43,7 +43,7 @@ public struct ThemeJSONModel: Codable {
         }
 
         public func encode(to encoder: Encoder) throws {
-            public var container = encoder.singleValueContainer()
+            var container = encoder.singleValueContainer()
             switch self {
             case let .style(style):
                 try container.encode(style)
@@ -77,7 +77,7 @@ public struct ThemeJSONModel: Codable {
         }
 
         public func encode(to encoder: Encoder) throws {
-            public var container = encoder.singleValueContainer()
+            var container = encoder.singleValueContainer()
             if let token {
                 try container.encode(token)
                 return
@@ -130,7 +130,7 @@ public extension ThemeJSONModel {
         nodes: [String: StyleNode],
         parentKey: String?
     ) -> [String: UserStyleModel] {
-        public var flattened = [String: UserStyleModel]()
+        var flattened = [String: UserStyleModel]()
         for (key, node) in nodes {
             let composedKey = parentKey.map { "\($0).\(key)" } ?? key
             switch node {
