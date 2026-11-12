@@ -115,6 +115,10 @@ caching behavior are identical either way.
   `ThemeModel.Lookup(primary: moduleModel, fallback: baseModel)`.
 
 ## Scalability Notes
+- `ThemeValidator` statically checks a payload (unknown token refs, alias
+  cycles, light/dark parity) and returns every issue at once. Modules pass
+  published base tokens via `ExternalTokens`. It is the foundation for the
+  planned validation CLI / CI gate.
 - Keep JSON semantic and tokenized to avoid duplicated style declarations.
 - Generate typed constants per module/brand to keep APIs manageable.
 - Add build-time validation and token governance for large multi-team systems.

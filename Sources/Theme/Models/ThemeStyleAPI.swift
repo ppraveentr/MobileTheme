@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-enum ThemeMode: String, Codable, Sendable {
+enum ThemeMode: String, Codable, Sendable, CaseIterable {
     case light
     case dark
 }

@@ -1,0 +1,16 @@
+name: Enterprise Scale Branch
+
+on:
+  push:
+    branches: [ "feature/enterprise-scale" ]
+
+jobs:
+  build:
+    runs-on: macos-latest
+
+    steps:
+    - uses: actions/checkout@v4
+    - name: Build
+      run: swift build 2>&1 | tail -n 200
+    - name: Test
+      run: swift test 2>&1 | tail -n 200
