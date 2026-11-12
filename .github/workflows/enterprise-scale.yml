@@ -4,6 +4,10 @@ on:
   push:
     branches: [ "feature/enterprise-scale" ]
 
+defaults:
+  run:
+    shell: bash
+
 jobs:
   stable:
     name: Xcode 26.6 (stable)

@@ -48,7 +48,8 @@ final class IsolatedManagerTests: XCTestCase {
         let manager = ThemesManager()
         try await manager.setup(base)
         try await manager.register(namespace: "account", themeData: module)
-        XCTAssertNotNil(await manager.resolvedStyle(styleID: "account.Card", foregroundColorID: nil))
+        let registered = await manager.resolvedStyle(styleID: "account.Card", foregroundColorID: nil)
+        XCTAssertNotNil(registered)
 
         do {
             try await manager.register(namespace: "account", themeData: module)
@@ -56,7 +57,9 @@ final class IsolatedManagerTests: XCTestCase {
         } catch {
             XCTAssertEqual(error as? ThemeMergeError, .duplicateStyle("account.Card"))
         }
-        XCTAssertNotNil(await manager.resolvedStyle(styleID: "Label", foregroundColorID: nil))
-        XCTAssertNotNil(await manager.resolvedStyle(styleID: "account.Card", foregroundColorID: nil))
+        let label = await manager.resolvedStyle(styleID: "Label", foregroundColorID: nil)
+        let card = await manager.resolvedStyle(styleID: "account.Card", foregroundColorID: nil)
+        XCTAssertNotNil(label)
+        XCTAssertNotNil(card)
     }
 }
