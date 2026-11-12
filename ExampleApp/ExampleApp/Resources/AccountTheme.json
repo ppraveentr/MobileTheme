@@ -28,7 +28,7 @@
                 "alignment": "center",
                 "font": "header",
                 "border": "cardSuccess",
-                "background": "surfaceSelected"
+                "background": "cardSelected"
             },
             "Brand": {
                 "font": "main"
